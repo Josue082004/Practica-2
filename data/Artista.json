@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "nombres": "Viviana",
+        "nacionalidad": "Ecuatoriana"
+    },
+    {
+        "id": 2,
+        "nombres": "Juan Carlos",
+        "nacionalidad": "Ecuatoriana"
+    },
+    {
+        "id": 3,
+        "nombres": "Juan Carlos",
+        "nacionalidad": "Ecuatoriana"
+    },
+    {
+        "id": 4,
+        "nombres": "Kerly",
+        "nacionalidad": "Peruana"
+    },
+    {
+        "id": 5,
+        "nombres": "Tomala",
+        "nacionalidad": "Peruana"
+    }
+]
