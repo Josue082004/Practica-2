@@ -8,6 +8,7 @@ import { useDataProvider } from '@vaadin/hilla-react-crud';
 import { AlbumService } from 'Frontend/generated/endpoints';
 import Album from 'Frontend/generated/com/unl/music/base/models/Album';
 import { BandaService } from 'Frontend/generated/endpoints';
+import Banda from 'Frontend/generated/com/unl/music/base/models/Banda';
 import { useEffect, useState } from 'react';
 
 
@@ -48,7 +49,7 @@ function AlbumEntryForm(props: AlbumEntryFormProps) {
   useEffect(() => {
     const fetchBandas = async () => {
       const result = await BandaService.listAllBanda();
-      setBandas(result || []); // Asegúrate de manejar el caso en que no haya datos
+      setBandas(result || []);
     };
     fetchBandas();
   }, []);
@@ -173,32 +174,32 @@ function AlbumEntryFormUpdate(props: AlbumEntryFormPropsUpdate) {
     fetchBandas();
   }, []);
 
-const updateAlbum = async () => {
-  try {
-    if (!ident) {
-      Notification.show('ID del álbum no válido', { duration: 5000, position: 'top-center', theme: 'error' });
-      return;
-    }
-
-    console.log(`Actualizando album con ID: ${ident}, Nombre: ${nombre.value}, Fecha: ${fecha.value}, Banda ID: ${id_banda.value}`);
-    if (nombre.value.trim().length > 0 && fecha.value.trim().length > 0 && id_banda.value > 0) {
-      await AlbumService.updateAlbum(parseInt(ident), nombre.value, fecha.value, id_banda.value);
-      if (props.onAlbumUpdated) {
-        props.onAlbumUpdated();
+  const updateAlbum = async () => {
+    try {
+      if (!ident) {
+        Notification.show('ID del álbum no válido', { duration: 5000, position: 'top-center', theme: 'error' });
+        return;
       }
-      nombre.value = '';
-      fecha.value = '';
-      id_banda.value = -1;
-      dialogOpened.value = false;
-      Notification.show('Álbum modificado exitosamente', { duration: 5000, position: 'bottom-end', theme: 'success' });
-    } else {
-      Notification.show('No se pudo modificar, faltan datos', { duration: 5000, position: 'top-center', theme: 'error' });
+
+      console.log(`Actualizando album con ID: ${ident}, Nombre: ${nombre.value}, Fecha: ${fecha.value}, Banda ID: ${id_banda.value}`);
+      if (nombre.value.trim().length > 0 && fecha.value.trim().length > 0 && id_banda.value > 0) {
+        await AlbumService.updateAlbum(parseInt(ident), nombre.value, fecha.value, id_banda.value);
+        if (props.onAlbumUpdated) {
+          props.onAlbumUpdated();
+        }
+        nombre.value = '';
+        fecha.value = '';
+        id_banda.value = -1;
+        dialogOpened.value = false;
+        Notification.show('Álbum modificado exitosamente', { duration: 5000, position: 'bottom-end', theme: 'success' });
+      } else {
+        Notification.show('No se pudo modificar, faltan datos', { duration: 5000, position: 'top-center', theme: 'error' });
+      }
+    } catch (error) {
+      console.log(error);
+      handleError(error);
     }
-  } catch (error) {
-    console.log(error);
-    handleError(error);
-  }
-};
+  };
 
   return (
     <>
@@ -289,13 +290,13 @@ export default function AlbumListView() {
     list: () => AlbumService.listAll(),
   });
 
-function link({ item }: { item: Album }) {
-  return (
-    <span>
-      <AlbumEntryFormUpdate arguments={item} onAlbumUpdated={dataProvider.refresh} />
-    </span>
-  );
-}
+  function link({ item }: { item: Album }) {
+    return (
+      <span>
+        <AlbumEntryFormUpdate arguments={item} onAlbumUpdated={dataProvider.refresh} />
+      </span>
+    );
+  }
 
   return (
     <main className="w-full h-full flex flex-col box-border gap-s p-m">
@@ -308,7 +309,7 @@ function link({ item }: { item: Album }) {
         <GridColumn header="Nro" renderer={index} />
         <GridColumn path="nombre" header="Nombre del artista" />
         <GridColumn path="fecha" header="Fecha">
-          {({ item }) => (item.dueDate ? dateFormatter.format(new Date(item.dueDate)) : 'Never')}
+          {({ item }) => (item.fecha ? dateFormatter.format(new Date(item.fecha)) : 'Never')}
         </GridColumn>
         <GridColumn path="id_banda" header="Banda" />
         <GridColumn header="Acciones" renderer={link} />

@@ -1,1 +1,47 @@
-[{"id":1,"nombre":"Puerta","id_genero":2,"duracion":3,"url":"www.puerta.com","tipo":"VIRTUAL","id_album":3},{"id":2,"nombre":"Vuela Alto","id_genero":4,"duracion":8,"url":"www.vuela.com","tipo":"VIRTUAL","id_album":1},{"id":3,"nombre":"Primavera","id_genero":5,"duracion":30,"url":"www.rabor.com","tipo":"VIRTUAL","id_album":3}]
+[
+    {
+        "id": 3,
+        "nombre": "Primavera",
+        "id_genero": 3,
+        "duracion": 3,
+        "url": "www.rabor.com",
+        "tipo": "VIRTUAL",
+        "id_album": 3
+    },
+    {
+        "id": 4,
+        "nombre": "Lo Grande Que es Perdonar",
+        "id_genero": 2,
+        "duracion": 4,
+        "url": "https://www.youtube.com/watch?v\u003dXBQedQ58kvk\u0026list\u003dRD0O4CLgXvbjU\u0026index\u003d23",
+        "tipo": "VIRTUAL",
+        "id_album": 2
+    },
+    {
+        "id": 5,
+        "nombre": "Ninao",
+        "id_genero": 2,
+        "duracion": 3,
+        "url": "https://www.youtube.com/watch?v\u003dVT2qF97pQNw\u0026list\u003dRDVT2qF97pQNw\u0026start_radio\u003d1",
+        "tipo": "VIRTUAL",
+        "id_album": 3
+    },
+    {
+        "id": 6,
+        "nombre": "Dinero",
+        "id_genero": 4,
+        "duracion": 4,
+        "url": "www.algo..com",
+        "tipo": "FISICO",
+        "id_album": 4
+    },
+    {
+        "id": 7,
+        "nombre": "Ajena",
+        "id_genero": 4,
+        "duracion": 4,
+        "url": "www.secion.com",
+        "tipo": "VIRTUAL",
+        "id_album": 4
+    }
+]

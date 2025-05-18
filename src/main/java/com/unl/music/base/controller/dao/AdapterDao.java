@@ -90,7 +90,6 @@ public class AdapterDao<T> implements InterfaceDao<T> {
         LinkedList<T> list = listAll();
         for (int i = 0; i < list.getLength(); i++) {
             T current = list.get(i);
-            // Usar reflexión para obtener el ID del objeto actual
             Integer currentId = (Integer) current.getClass().getMethod("getId").invoke(current);
             if (currentId.equals(id)) {
                 list.update(obj, i);
@@ -98,13 +97,27 @@ public class AdapterDao<T> implements InterfaceDao<T> {
                 return;
             }
         }
-        throw new Exception("Objeto no encontrado con ID: " + id);
+        throw new Exception("No se encontro el ID: " + id);
     }
 
     public void delete(T obj, Integer pos) throws Exception {
         LinkedList<T> list = listAll();
         list.delete(pos);
         saveFile(g.toJson(list.toArray()));
+    }
+
+    public void delete_by_id(Integer id) throws Exception {
+        LinkedList<T> list = listAll();
+        for (int i = 0; i < list.getLength(); i++) {
+            T current = list.get(i);
+            Integer currentId = (Integer) current.getClass().getMethod("getId").invoke(current);
+            if (currentId.equals(id)) {
+                list.delete(i);
+                saveFile(g.toJson(list.toArray()));
+                return;
+            }
+        }
+        throw new Exception("Objeto no encontrado con ID: " + id);
     }
 
     @Override

@@ -1,0 +1,23 @@
+html {
+  --lumo-primary-color: green;
+  --lumo-font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+vaadin-grid::part(header-cell) {
+  font-weight: bold;
+}
+
+vaadin-button[theme~="registrar"] {
+  background-color: #27ae60;
+  color: white;
+}
+
+vaadin-button[theme~="eliminar"] {
+  background-color: #e74c3c;
+  color: white;
+}
+
+vaadin-button[theme~="editar"] {
+  background-color: #2980d9;
+  color: white;
+}

@@ -23,7 +23,7 @@ type BandaEntryFormProps = {
   onBandaCreated?: () => void;
 };
 
-type BandaEntryFormPropsUpdate ={
+type BandaEntryFormPropsUpdate = {
   onBandaUpdated?: () => void;
 };
 
@@ -42,25 +42,25 @@ function BandaEntryForm(props: BandaEntryFormProps) {
   const fecha = useSignal('');
 
   const createBanda = async () => {
-      try {
-        if (nombre.value.trim().length > 0 && fecha.value.trim().length > 0) {
-          await BandaService.createBanda(nombre.value, fecha.value);
-          if (props.onBandaCreated) {
-            props.onBandaCreated();
-          }
-          nombre.value = '';
-          fecha.value = '';
-          dialogOpened.value = false;
-          Notification.show('Banda creada exitosamente', { duration: 5000, position: 'bottom-end', theme: 'success' });
-        } else {
-          Notification.show('No se pudo crear, faltan datos', { duration: 5000, position: 'top-center', theme: 'error' });
+    try {
+      if (nombre.value.trim().length > 0 && fecha.value.trim().length > 0) {
+        await BandaService.createBanda(nombre.value, fecha.value);
+        if (props.onBandaCreated) {
+          props.onBandaCreated();
         }
-  
-      } catch (error) {
-        console.log(error);
-        handleError(error);
+        nombre.value = '';
+        fecha.value = '';
+        dialogOpened.value = false;
+        Notification.show('Banda creada exitosamente', { duration: 5000, position: 'bottom-end', theme: 'success' });
+      } else {
+        Notification.show('No se pudo crear, faltan datos', { duration: 5000, position: 'top-center', theme: 'error' });
       }
-    };
+
+    } catch (error) {
+      console.log(error);
+      handleError(error);
+    }
+  };
 
   return (
     <>
@@ -142,26 +142,26 @@ function BandaEntryFormUpdate(props: BandaEntryFormPropsUpdate) {
   const ident = useSignal(props.arguments.id);
 
   const updateBanda = async () => {
-      try {
-        if (nombre.value.trim().length > 0 && fecha.value.trim().length > 0) {
-          console.log(parseInt(ident.value)+"*********");
-          await BandaService.updateBanda(parseInt(ident.value),nombre.value, fecha.value);
-          if (props.onBandaUpdated) {
-            props.onBandaUpdated();
-          }
-          nombre.value = '';
-          fecha.value = '';
-          dialogOpened.value = false;
-          Notification.show('Banda modificada exitosamente', { duration: 5000, position: 'bottom-end', theme: 'success' });
-        } else {
-          Notification.show('No se pudo modificar, faltan datos', { duration: 5000, position: 'top-center', theme: 'error' });
+    try {
+      if (nombre.value.trim().length > 0 && fecha.value.trim().length > 0) {
+        console.log(parseInt(ident.value) + "*********");
+        await BandaService.updateBanda(parseInt(ident.value), nombre.value, fecha.value);
+        if (props.onBandaUpdated) {
+          props.onBandaUpdated();
         }
-  
-      } catch (error) {
-        console.log(error);
-        handleError(error);
+        nombre.value = '';
+        fecha.value = '';
+        dialogOpened.value = false;
+        Notification.show('Banda modificada exitosamente', { duration: 5000, position: 'bottom-end', theme: 'success' });
+      } else {
+        Notification.show('No se pudo modificar, faltan datos', { duration: 5000, position: 'top-center', theme: 'error' });
       }
-    };
+
+    } catch (error) {
+      console.log(error);
+      handleError(error);
+    }
+  };
 
   return (
     <>
@@ -240,14 +240,14 @@ export default function BandaListView() {
   const dataProvider = useDataProvider<Banda>({
     list: () => BandaService.listAllBanda(),
   });
-  
-function link({ item }: { item: Banda }) {
-  return (
-    <span>
-      <BandaEntryFormUpdate  arguments={item} onBandaUpdated={dataProvider.refresh} />
-    </span>
-  );
-}
+
+  function link({ item }: { item: Banda }) {
+    return (
+      <span>
+        <BandaEntryFormUpdate arguments={item} onBandaUpdated={dataProvider.refresh} />
+      </span>
+    );
+  }
 
   return (
     <main className="w-full h-full flex flex-col box-border gap-s p-m">
@@ -260,7 +260,7 @@ function link({ item }: { item: Banda }) {
         <GridColumn header="Nro" renderer={index} />
         <GridColumn path="nombre" header="Nombre del artista" />
         <GridColumn path="fecha" header="Fecha">
-          {({ item }) => (item.dueDate ? dateFormatter.format(new Date(item.dueDate)) : 'Never')}
+          {({ item }) => (item.fecha ? dateFormatter.format(new Date(item.fecha)) : 'Never')}
         </GridColumn>
         <GridColumn header="Acciones" renderer={link} />
       </Grid>

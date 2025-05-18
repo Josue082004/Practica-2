@@ -10,9 +10,12 @@ import com.unl.music.base.models.Album;
 import com.github.javaparser.quality.NotNull;
 import com.unl.music.base.controller.dao.dao_models.DaoAlbum;
 import com.unl.music.base.controller.dao.dao_models.DaoBanda;
+import com.unl.music.base.controller.dao.dao_models.DaoGenero;
 import com.unl.music.base.models.Banda;
+import com.unl.music.base.models.Cancion;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.BrowserCallable;
+import java.text.SimpleDateFormat;
 
 import io.micrometer.common.lang.NonNull;
 import jakarta.validation.constraints.NotEmpty;
@@ -26,7 +29,7 @@ public class AlbumService {
         db = new DaoAlbum();
     }
 
-    public void createAlbum(@NotEmpty String nombre, @NotNull Date fecha, Integer id_banda) throws Exception {
+    public void createAlbum(@NotEmpty String nombre, @NonNull Date fecha, Integer id_banda) throws Exception {
         if (nombre.trim().length() > 0 && fecha.toString().length() > 0 && id_banda != null) {
             db.getObj().setNombre(nombre);
             db.getObj().setFecha(fecha);
@@ -36,31 +39,16 @@ public class AlbumService {
         }
     }
 
-    public void updateAlbum(Integer id, @NotEmpty String nombre, @NotNull Date fecha, Integer id_banda)
+    public void updateAlbum(Integer id, @NotEmpty String nombre, @NonNull Date fecha, Integer id_banda)
             throws Exception {
         if (id != null && id > 0 && nombre.trim().length() > 0 && fecha.toString().length() > 0 && id_banda != null) {
-            // Crear un nuevo objeto Album con los datos actualizados
             Album albumToUpdate = new Album();
             albumToUpdate.setId(id);
             albumToUpdate.setNombre(nombre);
             albumToUpdate.setFecha(fecha);
             albumToUpdate.setId_banda(id_banda);
-
-            // Usar el método update_by_id para actualizar el álbum
             db.update_by_id(albumToUpdate, id);
         }
-    }
-
-    public List<String> getNombresBandas() {
-        List<String> nombres = new ArrayList<>();
-        DaoBanda dao = new DaoBanda();
-        Banda[] arreglo = dao.listAll().toArray(); // conviértelo a arreglo
-
-        for (Banda banda : arreglo) {
-            nombres.add(banda.getNombre());
-        }
-
-        return nombres;
     }
 
     public List<Album> listAllAlbum() {
@@ -69,24 +57,24 @@ public class AlbumService {
 
     public List<HashMap> listAll() {
         List<HashMap> lista = new ArrayList<>();
-        Album[] arreglo = db.listAll().toArray();
-        DaoBanda da = new DaoBanda();
+        if(!db.listAll().isEmpty()){
+            Album[] arreglo = db.listAll().toArray();
+            DaoBanda da = new DaoBanda();
+            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+            for (int i = 0; i < arreglo.length; i++) {
+                HashMap<String, String> aux = new HashMap<>();
+                aux.put("id", String.valueOf(arreglo[i].getId()));
+                aux.put("nombre", arreglo[i].getNombre());
+                Date fecha = arreglo[i].getFecha();
+                aux.put("fecha", fecha != null ? isoFormat.format(fecha) : "");
+                aux.put("id_banda", da.listAll().get(arreglo[i].getId_banda() - 1).getNombre());
 
-        for (int i = 0; i < arreglo.length; i++) {
-            HashMap<String, String> aux = new HashMap<>();
-            aux.put("id", String.valueOf(arreglo[i].getId()));
-            aux.put("nombre", arreglo[i].getNombre());
-            aux.put("fecha", arreglo[i].getFecha().toString());
+                lista.add(aux);
+            }
 
-            int indexBanda = arreglo[i].getId_banda() - 1;
-            String nombreBanda = indexBanda >= 0 && indexBanda < da.listAll().getLength()
-                    ? da.listAll().get(indexBanda).getNombre()
-                    : "Desconocido";
-
-            aux.put("id_banda", nombreBanda);
-            lista.add(aux);
         }
         return lista;
-    }
+
+}
 
 }

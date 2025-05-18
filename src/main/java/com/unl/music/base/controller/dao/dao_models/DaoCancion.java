@@ -2,6 +2,7 @@ package com.unl.music.base.controller.dao.dao_models;
 
 import com.unl.music.base.models.Cancion;
 import com.unl.music.base.controller.dao.AdapterDao;
+import com.unl.music.base.controller.data_struct.list.LinkedList;
 
 public class DaoCancion extends AdapterDao<Cancion>{
     private Cancion obj;
@@ -21,16 +22,24 @@ public class DaoCancion extends AdapterDao<Cancion>{
     }
 
     public Boolean save() {
-        try {
-            obj.setId(listAll().getLength()+1);
-            this.persist(obj);
-            return true;
-        } catch (Exception e) {
-            //TODO
-            return false;
-            // TODO: handle exception
+    try {
+        // Buscar el mayor id existente
+        LinkedList<Cancion> lista = listAll();
+        int maxId = 0;
+        for (int i = 0; i < lista.getLength(); i++) {
+            int idActual = lista.get(i).getId();
+            if (idActual > maxId) {
+                maxId = idActual;
+            }
         }
+        obj.setId(maxId + 1); // Asignar un id único
+        this.persist(obj);
+        return true;
+    } catch (Exception e) {
+        //TODO
+        return false;
     }
+}
 
     public Boolean update(int i) {
         try {
@@ -45,18 +54,7 @@ public class DaoCancion extends AdapterDao<Cancion>{
         }
     }
 
-    public Boolean delete(int i) {
-        try {
-            this.delete(obj, obj.getId());
-            return true;
-        } catch (Exception e) {
-            //Log de errores
-            e.printStackTrace();
-            System.out.println(e);
-            return false;
-        //TODO: handle exception
-        }
-    }
+
 
 
     

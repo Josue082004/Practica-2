@@ -32,6 +32,12 @@ type CancionEntryFormPropsUpdate = {
   onCancionUpdated?: () => void;
 };
 
+type CancionEntryFormPropsDelete = {
+  onCancionDeleted?: () => void;
+};
+
+
+// Create Cancion
 function CancionEntryForm(props: CancionEntryFormProps) {
   const dialogOpened = useSignal(false);
   const [album, setAlbums] = useState<Album[]>([]);
@@ -56,7 +62,7 @@ function CancionEntryForm(props: CancionEntryFormProps) {
   useEffect(() => {
     const fetchGeneros = async () => {
       const result = await GeneroService.listAllGenero();
-      setGeneros(result || []); // Asegúrate de manejar el caso en que no haya datos
+      setGeneros(result || []); 
     };
     fetchGeneros();
   }, []);
@@ -64,10 +70,11 @@ function CancionEntryForm(props: CancionEntryFormProps) {
   useEffect(() => {
     const fetchAlbums = async () => {
       const result = await AlbumService.listAll();
-      setAlbums(result || []); // Asegúrate de manejar el caso en que no haya datos
+      setAlbums(result || []); 
     };
     fetchAlbums();
   }, []);
+
   const createCancion = async () => {
     try {
       if (nombre.value.trim().length > 0 && id_genero.value > 0 && duracion.value > 0 && url.value.trim().length > 0 && tipo.value.trim().length > 0 && id_album.value > 0) {
@@ -140,7 +147,7 @@ function CancionEntryForm(props: CancionEntryFormProps) {
               value={nombre.value}
               onValueChanged={(evt) => (nombre.value = evt.detail.value)}
             />
-            <ComboBox 
+            <ComboBox
               label="Genero"
               placeholder="Seleccione un genero"
               items={genero}
@@ -154,6 +161,7 @@ function CancionEntryForm(props: CancionEntryFormProps) {
               aria-label='Ingrese la duracion de la cancion'
               value={duracion.value}
               onValueChanged={(evt) => (duracion.value = evt.detail.value)}
+              suffix="minutos"
             />
             <TextField label="Url"
               placeholder='Ingrese la url de la cancion'
@@ -161,7 +169,7 @@ function CancionEntryForm(props: CancionEntryFormProps) {
               value={url.value}
               onValueChanged={(evt) => (url.value = evt.detail.value)}
             />
-            <ComboBox 
+            <ComboBox
               label="Tipo"
               placeholder="Seleccione el Tipo de archivo"
               items={Object.values(TipoArchivoEnum)}
@@ -182,7 +190,9 @@ function CancionEntryForm(props: CancionEntryFormProps) {
           </VerticalLayout>
         </VerticalLayout>
       </Dialog>
-      <Button onClick={open}>Registrar</Button>
+      <Button theme="registrar" onClick={open}>
+        Registrar
+      </Button>
     </>
   );
 }
@@ -204,7 +214,7 @@ function CancionEntryFormUpdate(props: CancionEntryFormPropsUpdate) {
     dialogOpened.value = false;
   };
 
-  const ident = props.arguments.id;  
+  const ident = props.arguments.id;
   const nombre = useSignal(props.arguments.nombre);
   const id_genero = useSignal(props.arguments.id_genero);
   const duracion = useSignal(props.arguments.duracion);
@@ -215,7 +225,7 @@ function CancionEntryFormUpdate(props: CancionEntryFormPropsUpdate) {
   useEffect(() => {
     const fetchGeneros = async () => {
       const result = await GeneroService.listAllGenero();
-      setGeneros(result || []); // Asegúrate de manejar el caso en que no haya datos
+      setGeneros(result || []);
     };
     fetchGeneros();
   }, []);
@@ -223,39 +233,39 @@ function CancionEntryFormUpdate(props: CancionEntryFormPropsUpdate) {
   useEffect(() => {
     const fetchAlbums = async () => {
       const result = await AlbumService.listAll();
-      setAlbums(result || []); // Asegúrate de manejar el caso en que no haya datos
+      setAlbums(result || []); 
     };
     fetchAlbums();
   }, []);
 
-const updateCancion = async () => {
-  try {
-    if (!ident) {
-      Notification.show('ID del Cancion no valido', { duration: 5000, position: 'top-center', theme: 'error' });
-      return;
-    }
-    if (nombre.value.trim().length > 0 && id_genero.value > 0 && duracion.value.trim().length > 0 && url.value.trim().length > 0 && tipo.value.trim().length > 0 && id_album.value > 0) {
-      const tipoEnum = tipo.value as TipoArchivoEnum;
-      await CancionService.updateCancion(parseInt(ident), nombre.value, id_genero.value, duracion.value, url.value, tipo.value, id_album.value);
-      if (props.onCancionUpdated) {
-        props.onCancionUpdated();
+  const updateCancion = async () => {
+    try {
+      if (!ident) {
+        Notification.show('ID del Cancion no valido', { duration: 5000, position: 'top-center', theme: 'error' });
+        return;
       }
-      nombre.value = '';
-      id_genero.value = 0;
-      duracion.value = '';
-      url.value = '';
-      tipo.value = '';
-      id_album.value = 0;
-      dialogOpened.value = false;
-      Notification.show('Cancion modificada exitosamente', { duration: 5000, position: 'bottom-end', theme: 'success' });
-    } else {
-      Notification.show('No se pudo modificar, faltan datos', { duration: 5000, position: 'top-center', theme: 'error' });
+      if (nombre.value.trim().length > 0 && id_genero.value > 0 && duracion.value.trim().length > 0 && url.value.trim().length > 0 && tipo.value.trim().length > 0 && id_album.value > 0) {
+        const tipoEnum = tipo.value as TipoArchivoEnum;
+        await CancionService.updateCancion(parseInt(ident), nombre.value, id_genero.value, duracion.value, url.value, tipo.value, id_album.value);
+        if (props.onCancionUpdated) {
+          props.onCancionUpdated();
+        }
+        nombre.value = '';
+        id_genero.value = 0;
+        duracion.value = '';
+        url.value = '';
+        tipo.value = '';
+        id_album.value = 0;
+        dialogOpened.value = false;
+        Notification.show('Cancion modificada exitosamente', { duration: 5000, position: 'bottom-end', theme: 'success' });
+      } else {
+        Notification.show('No se pudo modificar, faltan datos', { duration: 5000, position: 'top-center', theme: 'error' });
+      }
+    } catch (error) {
+      console.log(error);
+      handleError(error);
     }
-  } catch (error) {
-    console.log(error);
-    handleError(error);
-  }
-};
+  };
 
   return (
     <>
@@ -302,7 +312,7 @@ const updateCancion = async () => {
               value={nombre.value}
               onValueChanged={(evt) => (nombre.value = evt.detail.value)}
             />
-            <ComboBox 
+            <ComboBox
               label="Genero"
               placeholder="Seleccione el Genero"
               items={genero}
@@ -316,6 +326,7 @@ const updateCancion = async () => {
               aria-label='Ingrese la duracion de la Cancion'
               value={duracion.value}
               onValueChanged={(evt) => (duracion.value = evt.detail.value)}
+              suffix="minutos"
             />
             <TextField label="Url"
               placeholder='Ingrese la URL de la cancion'
@@ -323,7 +334,7 @@ const updateCancion = async () => {
               value={url.value}
               onValueChanged={(evt) => (url.value = evt.detail.value)}
             />
-            <ComboBox 
+            <ComboBox
               label="Tipo"
               placeholder="Seleccione el Tipo de archivo"
               items={Object.values(TipoArchivoEnum)}
@@ -344,10 +355,88 @@ const updateCancion = async () => {
           </VerticalLayout>
         </VerticalLayout>
       </Dialog>
-      <Button onClick={open}>Editar</Button>
+      <Button theme="editar" onClick={open}>
+        Editar
+      </Button>
     </>
   );
 }
+//DELETE Cancion
+function CancionEntryFormDelete(props: CancionEntryFormPropsDelete) {
+  const dialogOpened = useSignal(false);
+
+  const open = () => {
+    dialogOpened.value = true;
+  };
+
+  const close = () => {
+    dialogOpened.value = false;
+  };
+
+  const ident = props.arguments.id;
+  const nombre = props.arguments.nombre; // <-- Aquí obtienes el nombre
+
+  const DeleteCancion = async () => {
+    try {
+      if (!ident) {
+        Notification.show('ID del Cancion no valido', { duration: 5000, position: 'top-center', theme: 'error' });
+        return;
+      }
+      await CancionService.deleteCancion(parseInt(ident));
+      if (props.onCancionDeleted) {
+        props.onCancionDeleted();
+      }
+      dialogOpened.value = false;
+      Notification.show('Cancion eliminada exitosamente', { duration: 5000, position: 'bottom-end', theme: 'success' });
+    } catch (error) {
+      console.log(error);
+      handleError(error);
+    }
+  };
+
+  return (
+    <>
+      <Button theme='eliminar' onClick={open}>Eliminar</Button>
+      <Dialog
+        aria-label="Eliminar Cancion"
+        draggable
+        modeless
+        opened={dialogOpened.value}
+        onOpenedChanged={(event) => {
+          dialogOpened.value = event.detail.value;
+        }}
+        header={
+          <h2
+            className="draggable"
+            style={{
+              flex: 1,
+              cursor: 'move',
+              margin: 0,
+              fontSize: '1.5em',
+              fontWeight: 'bold',
+              padding: 'var(--lumo-space-m) 0',
+            }}
+          >
+            Eliminar Cancion
+          </h2>
+        }
+        footerRenderer={() => (
+          <>
+            <Button onClick={close}>Cancelar</Button>
+            <Button theme="eliminar" onClick={DeleteCancion}>
+              Eliminar
+            </Button>
+          </>
+        )}
+      >
+        <VerticalLayout>
+          <span>¿Seguro que deseas eliminar la canción <b>{nombre.value}</b>?</span>
+        </VerticalLayout>
+      </Dialog>
+    </>
+  );
+}
+
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: 'medium',
@@ -362,6 +451,9 @@ function index({ model }: { model: GridItemModel<Cancion> }) {
   );
 }
 
+function duracionRenderer({ item }: { item: Cancion }) {
+  return <span>{item.duracion} minutos</span>;
+}
 
 
 export default function CancionListView() {
@@ -369,13 +461,14 @@ export default function CancionListView() {
     list: () => CancionService.listAll(),
   });
 
-function link({ item }: { item: Cancion }) {
-  return (
-    <span>
-      <CancionEntryFormUpdate arguments={item} onCancionUpdated={dataProvider.refresh} />
-    </span>
-  );
-}
+  function link({ item }: { item: Cancion }) {
+    return (
+      <span>
+        <CancionEntryFormUpdate arguments={item} onCancionUpdated={dataProvider.refresh} />
+        <CancionEntryFormDelete arguments={item} onCancionDeleted={dataProvider.refresh} />
+      </span>
+    );
+  }
 
   return (
     <main className="w-full h-full flex flex-col box-border gap-s p-m">
@@ -388,7 +481,7 @@ function link({ item }: { item: Cancion }) {
         <GridColumn header="Nro" renderer={index} />
         <GridColumn path="nombre" header="Nombre del artista" />
         <GridColumn path="id_genero" header="Genero" />
-        <GridColumn path="duracion" header="Duracion" />
+        <GridColumn header="Duracion" renderer={duracionRenderer} />
         <GridColumn path="url" header="Url" />
         <GridColumn path="tipo" header="Tipo" />
         <GridColumn path="id_album" header="Album" />
