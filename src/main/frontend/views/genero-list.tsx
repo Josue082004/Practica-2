@@ -109,7 +109,9 @@ function GeneroEntryForm(props: GeneroEntryFormProps) {
           </VerticalLayout>
         </VerticalLayout>
       </Dialog>
-      <Button onClick={open}>Registrar</Button>
+      <Button theme='registrar' onClick={open}>
+        Registrar
+      </Button>
     </>
   );
 }
@@ -201,7 +203,9 @@ function GeneroEntryFormUpdate(props: GeneroEntryFormPropsUpdate) {
           </VerticalLayout>
         </VerticalLayout>
       </Dialog>
-      <Button onClick={open}>Editar</Button>
+      <Button theme='editar' onClick={open}>
+        Editar
+      </Button>
     </>
   );
 }

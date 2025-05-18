@@ -117,7 +117,7 @@ function BandaEntryForm(props: BandaEntryFormProps) {
           </VerticalLayout>
         </VerticalLayout>
       </Dialog>
-      <Button onClick={open}>Registrar</Button>
+      <Button theme='registrar' onClick={open}>Registrar</Button>
     </>
   );
 }
@@ -218,7 +218,7 @@ function BandaEntryFormUpdate(props: BandaEntryFormPropsUpdate) {
           </VerticalLayout>
         </VerticalLayout>
       </Dialog>
-      <Button onClick={open}>Editar</Button>
+      <Button theme='editar' onClick={open}>Editar</Button>
     </>
   );
 }

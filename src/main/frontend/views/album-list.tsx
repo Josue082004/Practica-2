@@ -140,7 +140,7 @@ function AlbumEntryForm(props: AlbumEntryFormProps) {
           </VerticalLayout>
         </VerticalLayout>
       </Dialog>
-      <Button onClick={open}>Registrar</Button>
+      <Button theme='registrar' onClick={open}>Registrar</Button>
     </>
   );
 }
@@ -191,7 +191,7 @@ function AlbumEntryFormUpdate(props: AlbumEntryFormPropsUpdate) {
         fecha.value = '';
         id_banda.value = -1;
         dialogOpened.value = false;
-        Notification.show('Álbum modificado exitosamente', { duration: 5000, position: 'bottom-end', theme: 'success' });
+        Notification.show('Album modificado exitosamente', { duration: 5000, position: 'bottom-end', theme: 'success' });
       } else {
         Notification.show('No se pudo modificar, faltan datos', { duration: 5000, position: 'top-center', theme: 'error' });
       }
@@ -265,10 +265,12 @@ function AlbumEntryFormUpdate(props: AlbumEntryFormPropsUpdate) {
           </VerticalLayout>
         </VerticalLayout>
       </Dialog>
-      <Button onClick={open}>Editar</Button>
+      <Button theme='editar' onClick={open}>Editar</Button>
     </>
   );
 }
+
+
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: 'medium',
