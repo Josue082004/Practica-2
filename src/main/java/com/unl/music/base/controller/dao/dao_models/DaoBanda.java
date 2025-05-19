@@ -1,9 +1,6 @@
 package com.unl.music.base.controller.dao.dao_models;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
 import com.unl.music.base.models.Banda;
 import com.unl.music.base.controller.dao.AdapterDao;
 

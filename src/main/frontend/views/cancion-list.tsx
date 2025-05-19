@@ -472,14 +472,14 @@ export default function CancionListView() {
 
   return (
     <main className="w-full h-full flex flex-col box-border gap-s p-m">
-      <ViewToolbar title="Cancions">
+      <ViewToolbar title="Canciones">
         <Group>
           <CancionEntryForm onCancionCreated={dataProvider.refresh} />
         </Group>
       </ViewToolbar>
       <Grid dataProvider={dataProvider.dataProvider}>
         <GridColumn header="Nro" renderer={index} />
-        <GridColumn path="nombre" header="Nombre del artista" />
+        <GridColumn path="nombre" header="Cancion" />
         <GridColumn path="id_genero" header="Genero" />
         <GridColumn header="Duracion" renderer={duracionRenderer} />
         <GridColumn path="url" header="Url" />

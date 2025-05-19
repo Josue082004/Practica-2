@@ -4,21 +4,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.TimeZone;
 import com.unl.music.base.models.Album;
-import com.github.javaparser.quality.NotNull;
 import com.unl.music.base.controller.dao.dao_models.DaoAlbum;
 import com.unl.music.base.controller.dao.dao_models.DaoBanda;
-import com.unl.music.base.controller.dao.dao_models.DaoGenero;
-import com.unl.music.base.models.Banda;
-import com.unl.music.base.models.Cancion;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.BrowserCallable;
 import java.text.SimpleDateFormat;
-
 import io.micrometer.common.lang.NonNull;
 import jakarta.validation.constraints.NotEmpty;
+
 
 @BrowserCallable
 @AnonymousAllowed
@@ -60,7 +56,8 @@ public class AlbumService {
         if(!db.listAll().isEmpty()){
             Album[] arreglo = db.listAll().toArray();
             DaoBanda da = new DaoBanda();
-            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             for (int i = 0; i < arreglo.length; i++) {
                 HashMap<String, String> aux = new HashMap<>();
                 aux.put("id", String.valueOf(arreglo[i].getId()));

@@ -258,7 +258,7 @@ export default function BandaListView() {
       </ViewToolbar>
       <Grid dataProvider={dataProvider.dataProvider}>
         <GridColumn header="Nro" renderer={index} />
-        <GridColumn path="nombre" header="Nombre del artista" />
+        <GridColumn path="nombre" header="Banda" />
         <GridColumn path="fecha" header="Fecha">
           {({ item }) => (item.fecha ? dateFormatter.format(new Date(item.fecha)) : 'Never')}
         </GridColumn>

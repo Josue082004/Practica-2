@@ -5,8 +5,6 @@ import java.io.FileReader;
 
 import com.google.gson.Gson;
 import com.unl.music.base.controller.data_struct.list.LinkedList;
-import com.unl.music.base.models.Album;
-import com.unl.music.base.models.Cancion;
 
 import java.util.Scanner;
 import java.io.FileWriter;

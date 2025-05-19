@@ -245,7 +245,7 @@ function link({ item }: { item: Genero }) {
       </ViewToolbar>
       <Grid dataProvider={dataProvider.dataProvider}>
         <GridColumn header="Nro" renderer={index} />
-        <GridColumn path="nombre" header="Nombre del artista" />
+        <GridColumn path="nombre" header="Genero" />
         <GridColumn header="Acciones" renderer={link} />
       </Grid>
     </main>
