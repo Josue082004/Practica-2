@@ -1,1 +1,47 @@
-[{"id":3,"nombre":"Primavera","id_genero":2,"duracion":3,"url":"www.rabor.com","tipo":"VIRTUAL","id_album":5},{"id":4,"nombre":"Lo Grande Que es Perdonar","id_genero":2,"duracion":4,"url":"https://www.youtube.com/watch?v\u003dXBQedQ58kvk\u0026list\u003dRD0O4CLgXvbjU\u0026index\u003d23","tipo":"VIRTUAL","id_album":2},{"id":5,"nombre":"Ninao","id_genero":2,"duracion":3,"url":"https://www.youtube.com/watch?v\u003dVT2qF97pQNw\u0026list\u003dRDVT2qF97pQNw\u0026start_radio\u003d1","tipo":"VIRTUAL","id_album":3},{"id":7,"nombre":"Ajena","id_genero":4,"duracion":4,"url":"www.secion.com","tipo":"VIRTUAL","id_album":4}]
+[
+    {
+        "id": 3,
+        "nombre": "Primavera",
+        "id_genero": 3,
+        "duracion": 6,
+        "url": "www.rabor.com",
+        "tipo": "FISICO",
+        "id_album": 3
+    },
+    {
+        "id": 4,
+        "nombre": "Lo Grande Que es Perdonar",
+        "id_genero": 2,
+        "duracion": 7,
+        "url": "https://www.youtube.com/watch?v\u003dXBQedQ58kvk\u0026list\u003dRD0O4CLgXvbjU\u0026index\u003d23",
+        "tipo": "FISICO",
+        "id_album": 3
+    },
+    {
+        "id": 7,
+        "nombre": "Ajena",
+        "id_genero": 2,
+        "duracion": 4,
+        "url": "www.secion.com",
+        "tipo": "VIRTUAL",
+        "id_album": 1
+    },
+    {
+        "id": 8,
+        "nombre": "Unl",
+        "id_genero": 6,
+        "duracion": 6,
+        "url": "www.unl.edu",
+        "tipo": "FISICO",
+        "id_album": 3
+    },
+    {
+        "id": 9,
+        "nombre": "Yate",
+        "id_genero": 7,
+        "duracion": 8,
+        "url": "www.yate.com",
+        "tipo": "VIRTUAL",
+        "id_album": 3
+    }
+]

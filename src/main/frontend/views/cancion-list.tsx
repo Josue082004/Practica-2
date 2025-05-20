@@ -240,10 +240,7 @@ function CancionEntryFormUpdate(props: CancionEntryFormPropsUpdate) {
 
   const updateCancion = async () => {
     try {
-      if (!ident) {
-        Notification.show('ID del Cancion no valido', { duration: 5000, position: 'top-center', theme: 'error' });
-        return;
-      }
+
       if (nombre.value.trim().length > 0 && id_genero.value > 0 && duracion.value.trim().length > 0 && url.value.trim().length > 0 && 
       tipo.value.trim().length > 0 && id_album.value > 0) {
         const tipoEnum = tipo.value as TipoArchivoEnum;
@@ -379,10 +376,6 @@ function CancionEntryFormDelete(props: CancionEntryFormPropsDelete) {
 
   const DeleteCancion = async () => {
     try {
-      if (!ident) {
-        Notification.show('ID del Cancion no valido', { duration: 5000, position: 'top-center', theme: 'error' });
-        return;
-      }
       await CancionService.deleteCancion(parseInt(ident));
       if (props.onCancionDeleted) {
         props.onCancionDeleted();
