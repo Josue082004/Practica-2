@@ -26,7 +26,8 @@ public class CancionService {
         db = new DaoCancion();
     }
 
-    public void createCancion(@NotEmpty String nombre, Integer id_genero, @PositiveOrZero @NonNull Integer duracion,@NonNull String url, @NonNull TipoArchivoEnum tipo, Integer id_album) throws Exception {
+    public void createCancion(@NotEmpty String nombre, Integer id_genero, @PositiveOrZero @NonNull Integer duracion,@NonNull String url, 
+    @NonNull TipoArchivoEnum tipo, Integer id_album) throws Exception {
         if (nombre.trim().length() > 0 && id_genero != null && duracion != null && url.trim().length() > 0 && tipo != null && id_album != null) {
             db.getObj().setNombre(nombre);
             db.getObj().setId_genero(id_genero);
@@ -39,7 +40,8 @@ public class CancionService {
         }
     }
 
-    public void updateCancion(Integer id, @NotEmpty String nombre, Integer id_genero, @NonNull Integer duracion, @NonNull String url, @NonNull TipoArchivoEnum tipo, Integer id_album) throws Exception{
+    public void updateCancion(Integer id, @NotEmpty String nombre, Integer id_genero, @NonNull Integer duracion, @NonNull String url, 
+    @NonNull TipoArchivoEnum tipo, Integer id_album) throws Exception{
         if (id != null && id > 0 && nombre.trim().length() > 0 && id_genero != null && duracion != null && url.trim().length() > 0 && tipo != null) {
             Cancion aux = new Cancion();
             aux.setId(id);
@@ -61,11 +63,9 @@ public class CancionService {
             
         }
     }
-
     public List<Cancion> listAllCancion() {
         return Arrays.asList(db.listAll().toArray());
     }
-
     public List<HashMap> listAll() {
         List<HashMap> lista = new ArrayList<>();
         if(!db.listAll().isEmpty()){

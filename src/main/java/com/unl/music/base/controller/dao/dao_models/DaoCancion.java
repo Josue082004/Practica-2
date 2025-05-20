@@ -23,7 +23,6 @@ public class DaoCancion extends AdapterDao<Cancion>{
 
     public Boolean save() {
     try {
-        // Buscar el mayor id existente
         LinkedList<Cancion> lista = listAll();
         int maxId = 0;
         for (int i = 0; i < lista.getLength(); i++) {
@@ -32,7 +31,7 @@ public class DaoCancion extends AdapterDao<Cancion>{
                 maxId = idActual;
             }
         }
-        obj.setId(maxId + 1); // Asignar un id único
+        obj.setId(maxId + 1);
         this.persist(obj);
         return true;
     } catch (Exception e) {
@@ -54,10 +53,6 @@ public class DaoCancion extends AdapterDao<Cancion>{
         }
     }
 
-
-
-
-    
     public static void main(String[] args) {
         DaoCancion da = new DaoCancion();
         da.getObj().setId(da.listAll().getLength() + 1);

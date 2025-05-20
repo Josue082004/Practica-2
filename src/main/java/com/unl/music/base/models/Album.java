@@ -2,25 +2,12 @@ package com.unl.music.base.models;
 
 import java.util.Date;
 
-
-
 public class Album {
     private Integer id;
     private String nombre;
     private Date fecha;
     private Integer id_banda;
 
-    
-
-    public Album() {
-    }
-
-    public Album(Integer id, String nombre, Date fecha, Integer id_banda) {
-        this.id = id;
-        this.nombre = nombre;
-        this.fecha = fecha;
-        this.id_banda = id_banda;
-    }
 
     public Integer getId() {
         return this.id;

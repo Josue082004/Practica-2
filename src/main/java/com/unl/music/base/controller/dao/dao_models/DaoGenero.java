@@ -43,8 +43,6 @@ public class DaoGenero extends AdapterDao<Genero>{
         }
     }   
     
-    
-
 
     public static void main(String[] args) {
         DaoGenero da = new DaoGenero();

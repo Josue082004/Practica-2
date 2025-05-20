@@ -47,8 +47,6 @@ public class DaoAlbum extends AdapterDao<Album>{
     }
     
     
-
-
     public static void main(String[] args) {
         DaoAlbum da = new DaoAlbum();
         da.getObj().setId(da.listAll().getLength() + 1);

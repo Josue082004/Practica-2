@@ -244,7 +244,8 @@ function CancionEntryFormUpdate(props: CancionEntryFormPropsUpdate) {
         Notification.show('ID del Cancion no valido', { duration: 5000, position: 'top-center', theme: 'error' });
         return;
       }
-      if (nombre.value.trim().length > 0 && id_genero.value > 0 && duracion.value.trim().length > 0 && url.value.trim().length > 0 && tipo.value.trim().length > 0 && id_album.value > 0) {
+      if (nombre.value.trim().length > 0 && id_genero.value > 0 && duracion.value.trim().length > 0 && url.value.trim().length > 0 && 
+      tipo.value.trim().length > 0 && id_album.value > 0) {
         const tipoEnum = tipo.value as TipoArchivoEnum;
         await CancionService.updateCancion(parseInt(ident), nombre.value, id_genero.value, duracion.value, url.value, tipo.value, id_album.value);
         if (props.onCancionUpdated) {
