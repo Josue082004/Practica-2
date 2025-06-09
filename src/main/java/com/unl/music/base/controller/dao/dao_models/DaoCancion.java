@@ -9,15 +9,15 @@ import com.unl.music.base.controller.Utiles;
 import com.unl.music.base.controller.dao.AdapterDao;
 import com.unl.music.base.controller.data_struct.list.LinkedList;
 
-public class DaoCancion extends AdapterDao<Cancion>{
+public class DaoCancion extends AdapterDao<Cancion> {
     private Cancion obj;
-    
+
     public DaoCancion() {
         super(Cancion.class);
     }
-    
+
     public Cancion getObj() {
-        if (obj == null) 
+        if (obj == null)
             this.obj = new Cancion();
         return obj;
     }
@@ -27,30 +27,30 @@ public class DaoCancion extends AdapterDao<Cancion>{
     }
 
     public Boolean save() {
-    try {
-        LinkedList<Cancion> lista = listAll();
-        int maxId = 0;
-        for (int i = 0; i < lista.getLength(); i++) {
-            int idActual = lista.get(i).getId();
-            if (idActual > maxId) {
-                maxId = idActual;
+        try {
+            LinkedList<Cancion> lista = listAll();
+            int maxId = 0;
+            for (int i = 0; i < lista.getLength(); i++) {
+                int idActual = lista.get(i).getId();
+                if (idActual > maxId) {
+                    maxId = idActual;
+                }
             }
+            obj.setId(maxId + 1);
+            this.persist(obj);
+            return true;
+        } catch (Exception e) {
+            // TODO
+            return false;
         }
-        obj.setId(maxId + 1);
-        this.persist(obj);
-        return true;
-    } catch (Exception e) {
-        //TODO
-        return false;
     }
-}
 
     public Boolean update(int i) {
         try {
             this.update(obj, obj.getId());
             return true;
         } catch (Exception e) {
-            //Log de errores
+            // Log de errores
             e.printStackTrace();
             System.out.println(e);
             return false;
@@ -58,9 +58,9 @@ public class DaoCancion extends AdapterDao<Cancion>{
         }
     }
 
-    public LinkedList<HashMap<String, String>>all() throws Exception{
-        LinkedList<HashMap<String,String>> lista = new LinkedList<>();
-        if(!this.listAll().isEmpty()){
+    public LinkedList<HashMap<String, String>> all() throws Exception {
+        LinkedList<HashMap<String, String>> lista = new LinkedList<>();
+        if (!this.listAll().isEmpty()) {
             Cancion[] arreglo = this.listAll().toArray();
             for (int i = 0; i < arreglo.length; i++) {
                 lista.add(toDict(arreglo[i]));
@@ -81,275 +81,326 @@ public class DaoCancion extends AdapterDao<Cancion>{
         aux.put("tipo", arreglo.getTipo().toString());
         aux.put("id_album", db.get(arreglo.getId_album()).getNombre());
         return aux;
-    }   
-
-    public LinkedList<Album> orderLastName (Integer type){
-        LinkedList<Album> lista = new LinkedList<>();
-        if(!listAll().isEmpty()) {
-            Integer cont = 0;
-            long startTime = System.currentTimeMillis();
-            Cancion arr[] = listAll().toArray();
-            int n = arr.length;
-            if(type == Utiles.ASCEDENTE){
-                for (int i = 0; i < n - 1; i++) {
-                    int min_idx = i;
-                    for (int j = i + 1; j < n; j++) {
-                        if (arr[j].getNombre().toLowerCase().compareTo(arr[min_idx].getNombre().toLowerCase()) < 0) {
-                            min_idx = j;
-                            cont++;
-                        }
-                    }
-                    Cancion temp = arr[min_idx];
-                    arr[min_idx] = arr[i];
-                    arr[i] = temp;
-                }
-            }else {
-                for (int i = 0; i < n - 1; i++) {
-                    int max_idx = i;
-                    for (int j = i + 1; j < n; j++) {
-                        if (arr[j].getNombre().toLowerCase().compareTo(arr[max_idx].getNombre().toLowerCase()) > 0) {
-                            max_idx = j;
-                            cont++;
-                        }
-                    }
-                    Cancion temp = arr[max_idx];
-                    arr[max_idx] = arr[i];
-                    arr[i] = temp;
-                }
-            }
-
-            long endTime = System.currentTimeMillis();
-            System.out.println("Tiempo de ordenamiento: " + (endTime - startTime) + " ms");
-            // Convert Cancion[] to Album[] before calling toList
-            Album[] albumArr = new Album[arr.length];
-            for (int i = 0; i < arr.length; i++) {
-                // Create a new Album from Cancion fields (adjust as needed)
-                Cancion cancion = arr[i];
-                Album album = new Album();
-                album.setId(cancion.getId_album());
-                album.setNombre(cancion.getNombre());
-                // Set other Album fields as needed from Cancion
-                albumArr[i] = album;
-            }
-            lista.toList(albumArr);
-    }
-    return lista;
     }
 
-    public LinkedList<Cancion> orderGenero (Integer type){
+    // public LinkedList<Album> orderLastName (Integer type){
+    // LinkedList<Album> lista = new LinkedList<>();
+    // if(!listAll().isEmpty()) {
+    // Integer cont = 0;
+    // long startTime = System.currentTimeMillis();
+    // Cancion arr[] = listAll().toArray();
+    // int n = arr.length;
+    // if(type == Utiles.ASCEDENTE){
+    // for (int i = 0; i < n - 1; i++) {
+    // int min_idx = i;
+    // for (int j = i + 1; j < n; j++) {
+    // if
+    // (arr[j].getNombre().toLowerCase().compareTo(arr[min_idx].getNombre().toLowerCase())
+    // < 0) {
+    // min_idx = j;
+    // cont++;
+    // }
+    // }
+    // Cancion temp = arr[min_idx];
+    // arr[min_idx] = arr[i];
+    // arr[i] = temp;
+    // }
+    // }else {
+    // for (int i = 0; i < n - 1; i++) {
+    // int max_idx = i;
+    // for (int j = i + 1; j < n; j++) {
+    // if
+    // (arr[j].getNombre().toLowerCase().compareTo(arr[max_idx].getNombre().toLowerCase())
+    // > 0) {
+    // max_idx = j;
+    // cont++;
+    // }
+    // }
+    // Cancion temp = arr[max_idx];
+    // arr[max_idx] = arr[i];
+    // arr[i] = temp;
+    // }
+    // }
+
+    // long endTime = System.currentTimeMillis();
+    // System.out.println("Tiempo de ordenamiento: " + (endTime - startTime) + "
+    // ms");
+    // // Convert Cancion[] to Album[] before calling toList
+    // Album[] albumArr = new Album[arr.length];
+    // for (int i = 0; i < arr.length; i++) {
+    // // Create a new Album from Cancion fields (adjust as needed)
+    // Cancion cancion = arr[i];
+    // Album album = new Album();
+    // album.setId(cancion.getId_album());
+    // album.setNombre(cancion.getNombre());
+    // // Set other Album fields as needed from Cancion
+    // albumArr[i] = album;
+    // }
+    // lista.toList(albumArr);
+    // }
+    // return lista;
+    // }
+
+    // public LinkedList<Cancion> orderGenero (Integer type){
+    // LinkedList<Cancion> lista = new LinkedList<>();
+    // if(!listAll().isEmpty()) {
+    // Integer cont = 0;
+    // long startTime = System.currentTimeMillis();
+    // Cancion arr[] = listAll().toArray();
+    // int n = arr.length;
+    // if(type == Utiles.ASCEDENTE){
+    // for (int i = 0; i < n - 1; i++) {
+    // int min_idx = i;
+    // for (int j = i + 1; j < n; j++) {
+    // if (arr[j].getId_genero() < arr[min_idx].getId_genero()) {
+    // min_idx = j;
+    // cont++;
+    // }
+    // }
+    // Cancion temp = arr[min_idx];
+    // arr[min_idx] = arr[i];
+    // arr[i] = temp;
+    // }
+    // }else {
+    // for (int i = 0; i < n - 1; i++) {
+    // int max_idx = i;
+    // for (int j = i + 1; j < n; j++) {
+    // if (arr[j].getId_genero() > arr[max_idx].getId_genero()) {
+    // max_idx = j;
+    // cont++;
+    // }
+    // }
+    // Cancion temp = arr[max_idx];
+    // arr[max_idx] = arr[i];
+    // arr[i] = temp;
+    // }
+    // }
+
+    // long endTime = System.currentTimeMillis();
+    // System.out.println("Tiempo de ordenamiento: " + (endTime - startTime) + "
+    // ms");
+    // lista.toList(arr);
+    // }
+    // return lista;
+    // }
+
+    // public LinkedList<Cancion> orderDuracion (Integer type){
+    // LinkedList<Cancion> lista = new LinkedList<>();
+    // if(!listAll().isEmpty()) {
+    // Integer cont = 0;
+    // long startTime = System.currentTimeMillis();
+    // Cancion arr[] = listAll().toArray();
+    // int n = arr.length;
+    // if(type == Utiles.ASCEDENTE){
+    // for (int i = 0; i < n - 1; i++) {
+    // int min_idx = i;
+    // for (int j = i + 1; j < n; j++) {
+    // if (arr[j].getDuracion() < arr[min_idx].getDuracion()) {
+    // min_idx = j;
+    // cont++;
+    // }
+    // }
+    // Cancion temp = arr[min_idx];
+    // arr[min_idx] = arr[i];
+    // arr[i] = temp;
+    // }
+    // }else {
+    // for (int i = 0; i < n - 1; i++) {
+    // int max_idx = i;
+    // for (int j = i + 1; j < n; j++) {
+    // if (arr[j].getDuracion() > arr[max_idx].getDuracion()) {
+    // max_idx = j;
+    // cont++;
+    // }
+    // }
+    // Cancion temp = arr[max_idx];
+    // arr[max_idx] = arr[i];
+    // arr[i] = temp;
+    // }
+    // }
+
+    // long endTime = System.currentTimeMillis();
+    // System.out.println("Tiempo de ordenamiento: " + (endTime - startTime) + "
+    // ms");
+    // lista.toList(arr);
+    // }
+    // return lista;
+    // }
+
+    // public LinkedList<Cancion> orderUrl (Integer type){
+    // LinkedList<Cancion> lista = new LinkedList<>();
+    // if(!listAll().isEmpty()) {
+    // Integer cont = 0;
+    // long startTime = System.currentTimeMillis();
+    // Cancion arr[] = listAll().toArray();
+    // int n = arr.length;
+    // if(type == Utiles.ASCEDENTE){
+    // for (int i = 0; i < n - 1; i++) {
+    // int min_idx = i;
+    // for (int j = i + 1; j < n; j++) {
+    // if (arr[j].getUrl().compareTo(arr[min_idx].getUrl()) < 0) {
+    // min_idx = j;
+    // cont++;
+    // }
+    // }
+    // Cancion temp = arr[min_idx];
+    // arr[min_idx] = arr[i];
+    // arr[i] = temp;
+    // }
+    // }else {
+    // for (int i = 0; i < n - 1; i++) {
+    // int max_idx = i;
+    // for (int j = i + 1; j < n; j++) {
+    // if (arr[j].getUrl().compareTo(arr[max_idx].getUrl()) > 0) {
+    // max_idx = j;
+    // cont++;
+    // }
+    // }
+    // Cancion temp = arr[max_idx];
+    // arr[max_idx] = arr[i];
+    // arr[i] = temp;
+    // }
+    // }
+
+    // long endTime = System.currentTimeMillis();
+    // System.out.println("Tiempo de ordenamiento: " + (endTime - startTime) + "
+    // ms");
+    // lista.toList(arr);
+    // }
+    // return lista;
+    // }
+
+    // public LinkedList<Cancion> orderTipo (Integer type){
+    // LinkedList<Cancion> lista = new LinkedList<>();
+    // if(!listAll().isEmpty()) {
+    // Integer cont = 0;
+    // long startTime = System.currentTimeMillis();
+    // Cancion arr[] = listAll().toArray();
+    // int n = arr.length;
+    // if(type == Utiles.ASCEDENTE){
+    // for (int i = 0; i < n - 1; i++) {
+    // int min_idx = i;
+    // for (int j = i + 1; j < n; j++) {
+    // if (arr[j].getTipo().ordinal() < arr[min_idx].getTipo().ordinal()) {
+    // min_idx = j;
+    // cont++;
+    // }
+    // }
+    // Cancion temp = arr[min_idx];
+    // arr[min_idx] = arr[i];
+    // arr[i] = temp;
+    // }
+    // }else {
+    // for (int i = 0; i < n - 1; i++) {
+    // int max_idx = i;
+    // for (int j = i + 1; j < n; j++) {
+    // if (arr[j].getTipo().ordinal() > arr[max_idx].getTipo().ordinal()) {
+    // max_idx = j;
+    // cont++;
+    // }
+    // }
+    // Cancion temp = arr[max_idx];
+    // arr[max_idx] = arr[i];
+    // arr[i] = temp;
+    // }
+    // }
+
+    // long endTime = System.currentTimeMillis();
+    // System.out.println("Tiempo de ordenamiento: " + (endTime - startTime) + "
+    // ms");
+    // lista.toList(arr);
+    // }
+    // return lista;
+    // }
+
+    // public LinkedList<Cancion> orderAlbum (Integer type){
+    // LinkedList<Cancion> lista = new LinkedList<>();
+    // if(!listAll().isEmpty()) {
+    // Integer cont = 0;
+    // long startTime = System.currentTimeMillis();
+    // Cancion arr[] = listAll().toArray();
+    // int n = arr.length;
+    // if(type == Utiles.ASCEDENTE){
+    // for (int i = 0; i < n - 1; i++) {
+    // int min_idx = i;
+    // for (int j = i + 1; j < n; j++) {
+    // if (arr[j].getId_album() < arr[min_idx].getId_album()) {
+    // min_idx = j;
+    // cont++;
+    // }
+    // }
+    // Cancion temp = arr[min_idx];
+    // arr[min_idx] = arr[i];
+    // arr[i] = temp;
+    // }
+    // }else {
+    // for (int i = 0; i < n - 1; i++) {
+    // int max_idx = i;
+    // for (int j = i + 1; j < n; j++) {
+    // if (arr[j].getId_album() > arr[max_idx].getId_album()) {
+    // max_idx = j;
+    // cont++;
+    // }
+    // }
+    // Cancion temp = arr[max_idx];
+    // arr[max_idx] = arr[i];
+    // arr[i] = temp;
+    // }
+    // }
+
+    // long endTime = System.currentTimeMillis();
+    // System.out.println("Tiempo de ordenamiento: " + (endTime - startTime) + "
+    // ms");
+    // lista.toList(arr);
+    // }
+    // return lista;
+    // }
+
+    public LinkedList<Cancion> orderByAttribute(String attribute, Integer type) {
         LinkedList<Cancion> lista = new LinkedList<>();
-        if(!listAll().isEmpty()) {
-            Integer cont = 0;
-            long startTime = System.currentTimeMillis();
+        if (!listAll().isEmpty()) {
             Cancion arr[] = listAll().toArray();
             int n = arr.length;
-            if(type == Utiles.ASCEDENTE){
-                for (int i = 0; i < n - 1; i++) {
-                    int min_idx = i;
-                    for (int j = i + 1; j < n; j++) {
-                        if (arr[j].getId_genero() < arr[min_idx].getId_genero()) {
-                            min_idx = j;
-                            cont++;
+            for (int i = 0; i < n - 1; i++) {
+                int idx = i;
+                for (int j = i + 1; j < n; j++) {
+                    try {
+                        Object valJ = Cancion.class.getMethod("get" + capitalize(attribute)).invoke(arr[j]);
+                        Object valIdx = Cancion.class.getMethod("get" + capitalize(attribute)).invoke(arr[idx]);
+                        int cmp;
+                        if (valJ instanceof Comparable && valIdx instanceof Comparable) {
+                            cmp = ((Comparable) valJ).compareTo(valIdx);
+                        } else {
+                            cmp = valJ.toString().compareTo(valIdx.toString());
                         }
-                    }
-                    Cancion temp = arr[min_idx];
-                    arr[min_idx] = arr[i];
-                    arr[i] = temp;
-                }
-            }else {
-                for (int i = 0; i < n - 1; i++) {
-                    int max_idx = i;
-                    for (int j = i + 1; j < n; j++) {
-                        if (arr[j].getId_genero() > arr[max_idx].getId_genero()) {
-                            max_idx = j;
-                            cont++;
+                        if ((type == Utiles.ASCEDENTE && cmp < 0) || (type == Utiles.DESCENDENTE && cmp > 0)) {
+                            idx = j;
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    Cancion temp = arr[max_idx];
-                    arr[max_idx] = arr[i];
-                    arr[i] = temp;
                 }
+                Cancion temp = arr[idx];
+                arr[idx] = arr[i];
+                arr[i] = temp;
             }
-
-            long endTime = System.currentTimeMillis();
-            System.out.println("Tiempo de ordenamiento: " + (endTime - startTime) + " ms");
             lista.toList(arr);
         }
         return lista;
     }
 
-    public LinkedList<Cancion> orderDuracion (Integer type){
-        LinkedList<Cancion> lista = new LinkedList<>();
-        if(!listAll().isEmpty()) {
-            Integer cont = 0;
-            long startTime = System.currentTimeMillis();
-            Cancion arr[] = listAll().toArray();
-            int n = arr.length;
-            if(type == Utiles.ASCEDENTE){
-                for (int i = 0; i < n - 1; i++) {
-                    int min_idx = i;
-                    for (int j = i + 1; j < n; j++) {
-                        if (arr[j].getDuracion() < arr[min_idx].getDuracion()) {
-                            min_idx = j;
-                            cont++;
-                        }
-                    }
-                    Cancion temp = arr[min_idx];
-                    arr[min_idx] = arr[i];
-                    arr[i] = temp;
-                }
-            }else {
-                for (int i = 0; i < n - 1; i++) {
-                    int max_idx = i;
-                    for (int j = i + 1; j < n; j++) {
-                        if (arr[j].getDuracion() > arr[max_idx].getDuracion()) {
-                            max_idx = j;
-                            cont++;
-                        }
-                    }
-                    Cancion temp = arr[max_idx];
-                    arr[max_idx] = arr[i];
-                    arr[i] = temp;
-                }
-            }
-
-            long endTime = System.currentTimeMillis();
-            System.out.println("Tiempo de ordenamiento: " + (endTime - startTime) + " ms");
-            lista.toList(arr);
-        }
-        return lista;
+    // Método auxiliar para capitalizar el atributo (por ejemplo: "nombre" ->
+    // "Nombre")
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty())
+            return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
-    public LinkedList<Cancion> orderUrl (Integer type){
-        LinkedList<Cancion> lista = new LinkedList<>();
-        if(!listAll().isEmpty()) {
-            Integer cont = 0;
-            long startTime = System.currentTimeMillis();
-            Cancion arr[] = listAll().toArray();
-            int n = arr.length;
-            if(type == Utiles.ASCEDENTE){
-                for (int i = 0; i < n - 1; i++) {
-                    int min_idx = i;
-                    for (int j = i + 1; j < n; j++) {
-                        if (arr[j].getUrl().compareTo(arr[min_idx].getUrl()) < 0) {
-                            min_idx = j;
-                            cont++;
-                        }
-                    }
-                    Cancion temp = arr[min_idx];
-                    arr[min_idx] = arr[i];
-                    arr[i] = temp;
-                }
-            }else {
-                for (int i = 0; i < n - 1; i++) {
-                    int max_idx = i;
-                    for (int j = i + 1; j < n; j++) {
-                        if (arr[j].getUrl().compareTo(arr[max_idx].getUrl()) > 0) {
-                            max_idx = j;
-                            cont++;
-                        }
-                    }
-                    Cancion temp = arr[max_idx];
-                    arr[max_idx] = arr[i];
-                    arr[i] = temp;
-                }
-            }
-
-            long endTime = System.currentTimeMillis();
-            System.out.println("Tiempo de ordenamiento: " + (endTime - startTime) + " ms");
-            lista.toList(arr);
-        }
-        return lista;
-    }
-
-    public LinkedList<Cancion> orderTipo (Integer type){
-        LinkedList<Cancion> lista = new LinkedList<>();
-        if(!listAll().isEmpty()) {
-            Integer cont = 0;
-            long startTime = System.currentTimeMillis();
-            Cancion arr[] = listAll().toArray();
-            int n = arr.length;
-            if(type == Utiles.ASCEDENTE){
-                for (int i = 0; i < n - 1; i++) {
-                    int min_idx = i;
-                    for (int j = i + 1; j < n; j++) {
-                        if (arr[j].getTipo().ordinal() < arr[min_idx].getTipo().ordinal()) {
-                            min_idx = j;
-                            cont++;
-                        }
-                    }
-                    Cancion temp = arr[min_idx];
-                    arr[min_idx] = arr[i];
-                    arr[i] = temp;
-                }
-            }else {
-                for (int i = 0; i < n - 1; i++) {
-                    int max_idx = i;
-                    for (int j = i + 1; j < n; j++) {
-                        if (arr[j].getTipo().ordinal() > arr[max_idx].getTipo().ordinal()) {
-                            max_idx = j;
-                            cont++;
-                        }
-                    }
-                    Cancion temp = arr[max_idx];
-                    arr[max_idx] = arr[i];
-                    arr[i] = temp;
-                }
-            }
-
-            long endTime = System.currentTimeMillis();
-            System.out.println("Tiempo de ordenamiento: " + (endTime - startTime) + " ms");
-            lista.toList(arr);
-        }
-        return lista;
-    }
-
-    public LinkedList<Cancion> orderAlbum (Integer type){
-        LinkedList<Cancion> lista = new LinkedList<>();
-        if(!listAll().isEmpty()) {
-            Integer cont = 0;
-            long startTime = System.currentTimeMillis();
-            Cancion arr[] = listAll().toArray();
-            int n = arr.length;
-            if(type == Utiles.ASCEDENTE){
-                for (int i = 0; i < n - 1; i++) {
-                    int min_idx = i;
-                    for (int j = i + 1; j < n; j++) {
-                        if (arr[j].getId_album() < arr[min_idx].getId_album()) {
-                            min_idx = j;
-                            cont++;
-                        }
-                    }
-                    Cancion temp = arr[min_idx];
-                    arr[min_idx] = arr[i];
-                    arr[i] = temp;
-                }
-            }else {
-                for (int i = 0; i < n - 1; i++) {
-                    int max_idx = i;
-                    for (int j = i + 1; j < n; j++) {
-                        if (arr[j].getId_album() > arr[max_idx].getId_album()) {
-                            max_idx = j;
-                            cont++;
-                        }
-                    }
-                    Cancion temp = arr[max_idx];
-                    arr[max_idx] = arr[i];
-                    arr[i] = temp;
-                }
-            }
-
-            long endTime = System.currentTimeMillis();
-            System.out.println("Tiempo de ordenamiento: " + (endTime - startTime) + " ms");
-            lista.toList(arr);
-        }
-        return lista;
-    }
-
-        private int partition(Cancion arr[], int begin , int end , Integer type){
+    private int partition(Cancion arr[], int begin, int end, Integer type) {
         Cancion pivot = arr[end];
         int i = (begin - 1);
-        if(type == Utiles.ASCEDENTE){
+        if (type == Utiles.ASCEDENTE) {
             for (int j = begin; j < end; j++) {
                 if (arr[j].getNombre().toLowerCase().compareTo(pivot.getNombre().toLowerCase()) < 0) {
                     i++;
@@ -358,7 +409,7 @@ public class DaoCancion extends AdapterDao<Cancion>{
                     arr[j] = swapTemp;
                 }
             }
-        }else {
+        } else {
             for (int j = begin; j < end; j++) {
                 if (arr[j].getNombre().toLowerCase().compareTo(pivot.getNombre().toLowerCase()) > 0) {
                     i++;
@@ -382,9 +433,9 @@ public class DaoCancion extends AdapterDao<Cancion>{
         }
     }
 
-    public LinkedList<Cancion> orderQ(Integer type){
+    public LinkedList<Cancion> orderQ(Integer type) {
         LinkedList<Cancion> lista = new LinkedList<>();
-        if(!listAll().isEmpty()) {
+        if (!listAll().isEmpty()) {
             Cancion arr[] = listAll().toArray();
             quickSort(arr, 0, arr.length - 1, type);
             lista.toList(arr);
@@ -392,15 +443,54 @@ public class DaoCancion extends AdapterDao<Cancion>{
         return lista;
     }
 
-    public LinkedList<HashMap<String,String>> search(String attribute, String text , Integer type)throws Exception{
-        LinkedList<HashMap<String,String>> lista = all();
-        LinkedList<HashMap<String,String>> resp = new LinkedList<>();
+    // Shell Sort
+
+    public LinkedList<Cancion> shellSortByAttribute(String attribute, Integer type) {
+        LinkedList<Cancion> lista = new LinkedList<>();
+        if (!listAll().isEmpty()) {
+            Cancion[] arr = listAll().toArray();
+            int n = arr.length;
+            for (int gap = n / 2; gap > 0; gap /= 2) {
+                for (int i = gap; i < n; i++) {
+                    Cancion temp = arr[i];
+                    int j = i;
+                    try {
+                        Object tempVal = Cancion.class.getMethod("get" + capitalize(attribute)).invoke(temp);
+                        while (j >= gap) {
+                            Object gapVal = Cancion.class.getMethod("get" + capitalize(attribute)).invoke(arr[j - gap]);
+                            int cmp;
+                            if (tempVal instanceof Comparable && gapVal instanceof Comparable) {
+                                cmp = ((Comparable) tempVal).compareTo(gapVal);
+                            } else {
+                                cmp = tempVal.toString().compareTo(gapVal.toString());
+                            }
+                            boolean condition = (type == Utiles.ASCEDENTE && cmp < 0)
+                                    || (type == Utiles.DESCENDENTE && cmp > 0);
+                            if (!condition)
+                                break;
+                            arr[j] = arr[j - gap];
+                            j -= gap;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    arr[j] = temp;
+                }
+            }
+            lista.toList(arr);
+        }
+        return lista;
+    }
+
+    public LinkedList<HashMap<String, String>> search(String attribute, String text, Integer type) throws Exception {
+        LinkedList<HashMap<String, String>> lista = all();
+        LinkedList<HashMap<String, String>> resp = new LinkedList<>();
         if (!lista.isEmpty()) {
             HashMap<String, String>[] arr = lista.toArray();
-            System.out.println(attribute+" "+text+" ** *** * * ** * * * *");
+            System.out.println(attribute + " " + text + " ** *** * * ** * * * *");
             switch (type) {
                 case 1:
-                System.out.println(attribute+" "+text+" UNO");
+                    System.out.println(attribute + " " + text + " UNO");
                     for (HashMap m : arr) {
                         if (m.get(attribute).toString().toLowerCase().startsWith(text.toLowerCase())) {
                             resp.add(m);
@@ -408,7 +498,7 @@ public class DaoCancion extends AdapterDao<Cancion>{
                     }
                     break;
                 case 2:
-                System.out.println(attribute+" "+text+" DOS");
+                    System.out.println(attribute + " " + text + " DOS");
                     for (HashMap m : arr) {
                         if (m.get(attribute).toString().toLowerCase().endsWith(text.toLowerCase())) {
                             resp.add(m);
@@ -416,9 +506,9 @@ public class DaoCancion extends AdapterDao<Cancion>{
                     }
                     break;
                 default:
-                System.out.println(attribute+" "+text+" TRES");
+                    System.out.println(attribute + " " + text + " TRES");
                     for (HashMap m : arr) {
-                        System.out.println("***** "+m.get(attribute)+"   "+attribute);
+                        System.out.println("***** " + m.get(attribute) + "   " + attribute);
                         if (m.get(attribute).toString().toLowerCase().contains(text.toLowerCase())) {
                             resp.add(m);
                         }
@@ -428,9 +518,6 @@ public class DaoCancion extends AdapterDao<Cancion>{
         }
         return resp;
     }
-
-
-
 
     public static void main(String[] args) {
         DaoCancion da = new DaoCancion();

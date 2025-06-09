@@ -1,5 +1,5 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
-import { Button, DatePicker, Dialog, Grid, GridColumn, GridItemModel, TextArea, TextField, VerticalLayout, ComboBox, GridSortColumn, HorizontalLayout, Select, Icon } from '@vaadin/react-components';
+import { Button, DatePicker, Dialog, Grid, GridColumn, GridItemModel, TextField, VerticalLayout, ComboBox, GridSortColumn, HorizontalLayout, Select, Icon } from '@vaadin/react-components';
 import { Notification } from '@vaadin/react-components/Notification';
 import { useSignal } from '@vaadin/hilla-react-signals';
 import handleError from 'Frontend/views/_ErrorHandler';
@@ -522,7 +522,7 @@ export default function CancionView() {
   const search = async () => {
     try {
       console.log(criterio.value + " " + text.value);
-      CancionService.search(criterio.value, text.value, 0).then(function (data) {
+      CancionService.search(criterio.value, text.value, 1).then(function (data) {
         setItems(data);
       });
 
