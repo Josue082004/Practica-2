@@ -1,8 +1,11 @@
 package com.unl.music.base.controller.services;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Date;
+import java.util.HashMap;
+
 import com.unl.music.base.models.Banda;
 
 import com.unl.music.base.controller.dao.dao_models.DaoBanda;
@@ -40,5 +43,21 @@ public class BandaService {
 
     public List<Banda> listAllBanda(){
         return Arrays.asList(db.listAll().toArray());
+    }
+
+    public List<HashMap> listBanda(){
+        List<HashMap> lista = new ArrayList<>();
+        if(!db.listAll().isEmpty()) {
+            Banda [] arreglo = db.listAll().toArray();
+           
+            for(int i = 0; i < arreglo.length; i++) {
+                
+                HashMap<String, String> aux = new HashMap<>();
+                aux.put("id", arreglo[i].getId().toString(i));                
+                aux.put("nombre", arreglo[i].getNombre());
+                lista.add(aux);
+            }
+        }
+        return lista;
     }
 }

@@ -1,5 +1,7 @@
 package com.unl.music.base.models;
 
+import java.util.HashMap;
+
 public class Cancion {
     private Integer id;
     private String nombre;
@@ -63,6 +65,43 @@ public class Cancion {
 
     public void setId_album(Integer id_album) {
         this.id_album = id_album;
+    }
+
+    public Cancion copy(Cancion obj) {
+        Cancion aux = new Cancion();
+        aux.setId(obj.getId());
+        aux.setNombre(obj.getNombre());
+        aux.setId_genero(obj.getId_genero());
+        aux.setDuracion(obj.getDuracion());
+        aux.setUrl(obj.getUrl());
+        aux.setTipo(obj.getTipo());
+        aux.setId_album(obj.getId_album());
+        return aux;
+    }
+
+    public HashMap<String, String> toMap() {
+        HashMap<String, String> diccionario = new HashMap<>();
+        diccionario.put("id", this.id.toString());
+        diccionario.put("nombre", this.nombre);
+        diccionario.put("id_genero", this.id_genero.toString());
+        diccionario.put("duracion", this.duracion.toString());
+        diccionario.put("url", this.url);
+        diccionario.put("tipo", this.tipo.toString());
+        diccionario.put("id_album", this.id_album.toString());
+        return diccionario;
+    }
+
+    @Override
+    public String toString() {
+        return "Cancion{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", id_genero=" + id_genero +
+                ", duracion=" + duracion +
+                ", url='" + url + '\'' +
+                ", tipo=" + tipo +
+                ", id_album=" + id_album +
+                '}';
     }
 
 

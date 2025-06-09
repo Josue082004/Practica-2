@@ -1,5 +1,5 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
-import { Button, DatePicker, Dialog, Grid, GridColumn, GridItemModel, TextArea, TextField, VerticalLayout, ComboBox } from '@vaadin/react-components';
+import { Button, ComboBox, DatePicker, Dialog, Grid, GridColumn, GridItemModel, GridSortColumn, TextField, VerticalLayout } from '@vaadin/react-components';
 import { Notification } from '@vaadin/react-components/Notification';
 import { useSignal } from '@vaadin/hilla-react-signals';
 import handleError from 'Frontend/views/_ErrorHandler';
@@ -277,45 +277,80 @@ const dateFormatter = new Intl.DateTimeFormat(undefined, {
 });
 
 
-function index({ model }: { model: GridItemModel<Album> }) {
+export default function AlbumView(){
+  const [items, setItems] = useState([])
+  const [bandas, setBandas] = useState<Banda[]>([]);
+  const callData = () => {
+    AlbumService.listAll().then(function (data) {
+      setItems(data);
+    });
+};
+useEffect(() => {
+  callData();
+}, []);
+
+useEffect(() => {
+  const fetchBandas = async () => {
+    const result = await BandaService.listAllBanda();
+    setBandas(result || []);
+  };
+  fetchBandas();
+}, []);
+
+const order = (event , columnId) => {
+  console.log(event);
+  const direction = event.detail.value;
+  console.log(`Ordenando por ${columnId} en dirección ${direction}`);
+  
+  var dir = (direction === 'asc' ? 1 : 2);
+  AlbumService.orderBy(columnId, dir).then(function (data) {
+    setItems(data);
+  });
+}
+
+function bandaRenderer({ item }: { item: Album }) {
+  const banda = bandas.find(b => b.id === item.id_banda);
+  return <span>{banda ? banda.nombre : 'Sin banda'}</span>;
+}
+
+function indexLink({ item }: {item, Album} ) {
   return (
     <span>
-      {model.index + 1}
+      <AlbumEntryFormUpdate arguments={item} onAlbumUpdated={callData} />
+
     </span>
   );
 }
 
-
-
-export default function AlbumListView() {
-  const dataProvider = useDataProvider({
-    list: () => AlbumService.listAll(),
-  });
-
-  function link({ item }: { item: Album }) {
-    return (
+function indexIndex({model}: {model: GridItemModel<Album>}) {
+  return(
       <span>
-        <AlbumEntryFormUpdate arguments={item} onAlbumUpdated={dataProvider.refresh} />
+      {model.index + 1}
       </span>
-    );
+  )
   }
 
   return (
     <main className="w-full h-full flex flex-col box-border gap-s p-m">
-      <ViewToolbar title="Albums">
+      <ViewToolbar title='Albums'>
         <Group>
-          <AlbumEntryForm onAlbumCreated={dataProvider.refresh} />
+          <AlbumEntryForm onAlbumCreated={callData} />
         </Group>
       </ViewToolbar>
-      <Grid dataProvider={dataProvider.dataProvider}>
-        <GridColumn header="Nro" renderer={index} />
-        <GridColumn path="nombre" header="Album" />
-        <GridColumn path="fecha" header="Fecha">
-          {({ item }) => (item.fecha ? dateFormatter.format(new Date(item.fecha)) : 'Never')}
-        </GridColumn>
-        <GridColumn path="id_banda" header="Banda" />
-        <GridColumn header="Acciones" renderer={link} />
+      <Grid items={items} >
+        <GridColumn renderer={indexIndex} header="Nro"/>
+        <GridSortColumn path="nombre" header="Nombre" onDirectionChanged={(e) => order(e, 'nombre')} />
+        <GridSortColumn path="fecha" header="Fecha" onDirectionChanged={(e) => order(e, 'fecha')}
+          renderer={({ item }) => dateFormatter.format(new Date(item.fecha))} />
+        <GridColumn header="Banda" renderer={bandaRenderer} />
+        <GridColumn header="Acciones" renderer={indexLink} />
+
+        
+
       </Grid>
+  
+
     </main>
   );
+
 }

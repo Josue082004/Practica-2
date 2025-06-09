@@ -1,5 +1,5 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
-import { Button, DatePicker, Dialog, Grid, GridColumn, GridItemModel, TextArea, TextField, VerticalLayout, ComboBox } from '@vaadin/react-components';
+import { Button, DatePicker, Dialog, Grid, GridColumn, GridItemModel, TextArea, TextField, VerticalLayout, ComboBox, GridSortColumn, HorizontalLayout, Select, Icon } from '@vaadin/react-components';
 import { Notification } from '@vaadin/react-components/Notification';
 import { useSignal } from '@vaadin/hilla-react-signals';
 import handleError from 'Frontend/views/_ErrorHandler';
@@ -62,7 +62,7 @@ function CancionEntryForm(props: CancionEntryFormProps) {
   useEffect(() => {
     const fetchGeneros = async () => {
       const result = await GeneroService.listAllGenero();
-      setGeneros(result || []); 
+      setGeneros(result || []);
     };
     fetchGeneros();
   }, []);
@@ -70,7 +70,7 @@ function CancionEntryForm(props: CancionEntryFormProps) {
   useEffect(() => {
     const fetchAlbums = async () => {
       const result = await AlbumService.listAll();
-      setAlbums(result || []); 
+      setAlbums(result || []);
     };
     fetchAlbums();
   }, []);
@@ -233,7 +233,7 @@ function CancionEntryFormUpdate(props: CancionEntryFormPropsUpdate) {
   useEffect(() => {
     const fetchAlbums = async () => {
       const result = await AlbumService.listAll();
-      setAlbums(result || []); 
+      setAlbums(result || []);
     };
     fetchAlbums();
   }, []);
@@ -241,8 +241,8 @@ function CancionEntryFormUpdate(props: CancionEntryFormPropsUpdate) {
   const updateCancion = async () => {
     try {
 
-      if (nombre.value.trim().length > 0 && id_genero.value > 0 && duracion.value.trim().length > 0 && url.value.trim().length > 0 && 
-      tipo.value.trim().length > 0 && id_album.value > 0) {
+      if (nombre.value.trim().length > 0 && id_genero.value > 0 && duracion.value.trim().length > 0 && url.value.trim().length > 0 &&
+        tipo.value.trim().length > 0 && id_album.value > 0) {
         const tipoEnum = tipo.value as TipoArchivoEnum;
         await CancionService.updateCancion(parseInt(ident), nombre.value, id_genero.value, duracion.value, url.value, tipo.value, id_album.value);
         if (props.onCancionUpdated) {
@@ -437,49 +437,142 @@ const dateFormatter = new Intl.DateTimeFormat(undefined, {
 });
 
 
-function index({ model }: { model: GridItemModel<Cancion> }) {
-  return (
-    <span>
-      {model.index + 1}
-    </span>
-  );
-}
+
 
 function duracionRenderer({ item }: { item: Cancion }) {
   return <span>{item.duracion} minutos</span>;
 }
 
 
-export default function CancionListView() {
-  const dataProvider = useDataProvider({
-    list: () => CancionService.listAll(),
-  });
+export default function CancionView() {
+  const [items, setItems] = useState([]);
+  const [generos, setGeneros] = useState<Genero[]>([]);
+  const [albums, setAlbums] = useState<Album[]>([])
+  const callData = () => {
+    CancionService.listAll().then(function (data) {
+      setItems(data);
+    });
+  };
+  useEffect(() => {
+    callData();
+  }, []);
 
-  function link({ item }: { item: Cancion }) {
+  const criterio = useSignal('');
+  const text = useSignal('');
+  const itemSelect = [
+    { label: 'Nombre', value: 'nombre' },
+    { label: 'Genero', value: 'id_genero' },
+    { label: 'Url', value: 'url' },
+    { label: 'Tipo', value: 'tipo' },
+    { label: 'Duracion', value: 'duracion' },
+    { label: 'Album', value: 'id_album' },
+
+  ]
+
+  useEffect(() => {
+    CancionService.listAll().then(setItems);
+    GeneroService.listAllGenero().then(setGeneros);
+    AlbumService.listAll().then(setAlbums);
+  }, []);
+
+  const order = (event, columnId) => {
+    console.log(event);
+    const direction = event.detail.value;
+    console.log(`Ordenando por ${columnId} en dirección ${direction}`);
+
+    var dir = (direction === 'asc' ? 1 : 2);
+    CancionService.orderBy(columnId, dir).then(function (data) {
+      setItems(data);
+    });
+  }
+
+  function generoRenderer({ item }) {
+    if (typeof item.id_genero === 'string' && isNaN(Number(item.id_genero))) {
+      return <span>{item.id_genero}</span>;
+    }
+    const genero = generos.find(g => g.id === item.id_genero);
+    return <span>{genero ? genero.nombre : 'Sin género'}</span>;
+  }
+
+  function albumRenderer({ item }) {
+    if (typeof item.id_album === 'string' && isNaN(Number(item.id_album))) {
+      return <span>{item.id_album}</span>;
+    }
+    const album = albums.find(a => a.id === item.id_album);
+    return <span>{album ? album.nombre : 'Sin álbum'}</span>;
+  }
+
+  function indexLink({ item }: { item, Album }) {
     return (
       <span>
-        <CancionEntryFormUpdate arguments={item} onCancionUpdated={dataProvider.refresh} />
-        <CancionEntryFormDelete arguments={item} onCancionDeleted={dataProvider.refresh} />
+        <CancionEntryFormUpdate arguments={item} onAlbumUpdated={callData} />
+        <CancionEntryFormDelete arguments={item} onAlbumDeleted={callData} />
+
       </span>
     );
   }
+
+  function indexIndex({ model }: { model: GridItemModel<Album> }) {
+    return (
+      <span>
+        {model.index + 1}
+      </span>
+    )
+  }
+  const search = async () => {
+    try {
+      console.log(criterio.value + " " + text.value);
+      CancionService.search(criterio.value, text.value, 0).then(function (data) {
+        setItems(data);
+      });
+
+      criterio.value = '';
+      text.value = '';
+
+      Notification.show('Busqueda realizada', { duration: 5000, position: 'bottom-end', theme: 'success' });
+    } catch (error) {
+      console.log(error);
+      handleError(error);
+    }
+  };
+
 
   return (
     <main className="w-full h-full flex flex-col box-border gap-s p-m">
       <ViewToolbar title="Canciones">
         <Group>
-          <CancionEntryForm onCancionCreated={dataProvider.refresh} />
+          <CancionEntryForm onCancionCreated={callData} />
         </Group>
       </ViewToolbar>
-      <Grid dataProvider={dataProvider.dataProvider}>
-        <GridColumn header="Nro" renderer={index} />
-        <GridColumn path="nombre" header="Cancion" />
-        <GridColumn path="id_genero" header="Genero" />
-        <GridColumn header="Duracion" renderer={duracionRenderer} />
-        <GridColumn path="url" header="Url" />
-        <GridColumn path="tipo" header="Tipo" />
-        <GridColumn path="id_album" header="Album" />
-        <GridColumn header="Acciones" renderer={link} />
+      <HorizontalLayout theme="spacing">
+        <Select
+          items={itemSelect}
+          value={criterio.value}
+          onValueChanged={(e) => (criterio.value = e.detail.value)}
+          label="Criterio de busqueda"
+        />
+        <TextField
+          placeholder="Search"
+          style={{ width: '50%' }}
+          value={text.value}
+          onValueChanged={(evt) => (text.value = evt.detail.value)}
+        >
+          <Icon slot="prefix" icon="vaadin:search" />
+        </TextField>
+        <Button onClick={search} theme="primary">
+          BUSCAR
+        </Button>
+
+      </HorizontalLayout>
+      <Grid items={items}>
+        <GridSortColumn renderer={indexIndex} header="Nro " />
+        <GridSortColumn path="nombre" header="Nombre" onDirectionChanged={(e) => order(e, 'nombre')} />
+        <GridSortColumn path="id_genero" header="Genero" renderer={generoRenderer} onDirectionChanged={(e) => order(e, 'id_genero')} />
+        <GridSortColumn path="duracion" header="Duracion" renderer={duracionRenderer} onDirectionChanged={(e) => order(e, 'duracion')} />
+        <GridSortColumn path="url" header="Url" onDirectionChanged={(e) => order(e, 'url')} />
+        <GridSortColumn path="tipo" header="Tipo" onDirectionChanged={(e) => order(e, 'tipo')} />
+        <GridSortColumn path="id_album" header="Album" renderer={albumRenderer} onDirectionChanged={(e) => order(e, 'id_album')} />
+        <GridColumn renderer={indexLink} header="Acciones" />
       </Grid>
     </main>
   );
