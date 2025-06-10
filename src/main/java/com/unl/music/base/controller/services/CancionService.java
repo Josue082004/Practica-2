@@ -5,12 +5,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import com.unl.music.base.models.Album;
-import com.unl.music.base.models.Banda;
 import com.unl.music.base.models.Cancion;
 import com.unl.music.base.models.TipoArchivoEnum;
+import com.unl.music.base.controller.Utiles;
 import com.unl.music.base.controller.dao.dao_models.DaoAlbum;
-import com.unl.music.base.controller.dao.dao_models.DaoBanda;
 import com.unl.music.base.controller.dao.dao_models.DaoCancion;
 import com.unl.music.base.controller.dao.dao_models.DaoGenero;
 import com.unl.music.base.controller.data_struct.list.LinkedList;
@@ -108,20 +106,41 @@ public class CancionService {
     // }
 
     public List<Cancion> order(String atributo, Integer type) {
-        return Arrays.asList(db.orderByAttribute(atributo, type).toArray());
+        return Arrays.asList(db.orderQuickSort(atributo, type).toArray());
     }
 
-    public List<Cancion> shellSort(String atributo, Integer type) {
-        return Arrays.asList(db.shellSortByAttribute(atributo, type).toArray());
-    }
+    // public List<Cancion> shellSort(String atributo, Integer type) {
+    // return Arrays.asList(db.ShellSort(atributo, type).toArray());
+    // }
 
-    public List<HashMap> search(String attribute, String text, Integer type) throws Exception {
-        LinkedList<HashMap<String, String>> lista = db.search(attribute, text, type);
+    public List<Cancion> busquedaLineal(String attribute, String text, Integer type) throws Exception {
+        LinkedList<Cancion> lista = db.busquedaLineal(attribute, text, type);
         if (!lista.isEmpty()) {
             return Arrays.asList(lista.toArray());
         } else {
             return new ArrayList<>();
         }
     }
+
+public List<HashMap<String, String>> busquedaBinaria(String attribute, String text, Integer type) throws Exception {
+    LinkedList<HashMap<String, String>> lista = db.busquedaLinealBinaria(attribute, text, type);
+    if (!lista.isEmpty()) {
+        return Arrays.asList(lista.toArray());
+    } else {
+        return new ArrayList<>();
+    }
+}
+
+private HashMap<String, String> toDict(Cancion arreglo) throws Exception {
+    HashMap<String, String> aux = new HashMap<>();
+    aux.put("id", arreglo.getId().toString());
+    aux.put("nombre", arreglo.getNombre());
+    aux.put("id_genero", arreglo.getId_genero().toString()); // <-- Cambiado a ID numérico
+    aux.put("duracion", arreglo.getDuracion().toString());
+    aux.put("url", arreglo.getUrl());
+    aux.put("tipo", arreglo.getTipo().toString());
+    aux.put("id_album", arreglo.getId_album().toString()); // <-- Cambiado a ID numérico
+    return aux;
+}
 
 }

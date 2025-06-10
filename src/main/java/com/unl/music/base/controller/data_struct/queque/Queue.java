@@ -1,6 +1,5 @@
 package com.unl.music.base.controller.data_struct.queque;
 
-import com.unl.music.base.controller.data_struct.queque.QueueImplementation;
 
 public class Queue<E> {
     private QueueImplementation<E> Queue;

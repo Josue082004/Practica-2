@@ -356,168 +356,142 @@ public class DaoCancion extends AdapterDao<Cancion> {
     // return lista;
     // }
 
-    public LinkedList<Cancion> orderByAttribute(String attribute, Integer type) {
-        LinkedList<Cancion> lista = new LinkedList<>();
-        if (!listAll().isEmpty()) {
-            Cancion arr[] = listAll().toArray();
-            int n = arr.length;
-            for (int i = 0; i < n - 1; i++) {
-                int idx = i;
-                for (int j = i + 1; j < n; j++) {
-                    try {
-                        Object valJ = Cancion.class.getMethod("get" + capitalize(attribute)).invoke(arr[j]);
-                        Object valIdx = Cancion.class.getMethod("get" + capitalize(attribute)).invoke(arr[idx]);
-                        int cmp;
-                        if (valJ instanceof Comparable && valIdx instanceof Comparable) {
-                            cmp = ((Comparable) valJ).compareTo(valIdx);
-                        } else {
-                            cmp = valJ.toString().compareTo(valIdx.toString());
-                        }
-                        if ((type == Utiles.ASCEDENTE && cmp < 0) || (type == Utiles.DESCENDENTE && cmp > 0)) {
-                            idx = j;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                Cancion temp = arr[idx];
-                arr[idx] = arr[i];
-                arr[i] = temp;
-            }
-            lista.toList(arr);
-        }
-        return lista;
-    }
+    // public LinkedList<Cancion> orderByAttribute(String attribute, Integer type) {
+    // LinkedList<Cancion> lista = new LinkedList<>();
+    // if (!listAll().isEmpty()) {
+    // Cancion arr[] = listAll().toArray();
+    // int n = arr.length;
+    // for (int i = 0; i < n - 1; i++) {
+    // int idx = i;
+    // for (int j = i + 1; j < n; j++) {
+    // try {
+    // Object valJ = Cancion.class.getMethod("get" +
+    // capitalize(attribute)).invoke(arr[j]);
+    // Object valIdx = Cancion.class.getMethod("get" +
+    // capitalize(attribute)).invoke(arr[idx]);
+    // int cmp;
+    // if (valJ instanceof Comparable && valIdx instanceof Comparable) {
+    // cmp = ((Comparable) valJ).compareTo(valIdx);
+    // } else {
+    // cmp = valJ.toString().compareTo(valIdx.toString());
+    // }
+    // if ((type == Utiles.ASCEDENTE && cmp < 0) || (type == Utiles.DESCENDENTE &&
+    // cmp > 0)) {
+    // idx = j;
+    // }
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
+    // }
+    // Cancion temp = arr[idx];
+    // arr[idx] = arr[i];
+    // arr[i] = temp;
+    // }
+    // lista.toList(arr);
+    // }
+    // return lista;
+    // }
 
-    // Método auxiliar para capitalizar el atributo (por ejemplo: "nombre" ->
-    // "Nombre")
-    private String capitalize(String str) {
-        if (str == null || str.isEmpty())
-            return str;
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
-    }
+    // // Método auxiliar para capitalizar el atributo (por ejemplo: "nombre" ->
+    // // "Nombre")
+    // private String capitalize(String str) {
+    // if (str == null || str.isEmpty())
+    // return str;
+    // return str.substring(0, 1).toUpperCase() + str.substring(1);
+    // }
 
-    private int partition(Cancion arr[], int begin, int end, Integer type) {
-        Cancion pivot = arr[end];
-        int i = (begin - 1);
-        if (type == Utiles.ASCEDENTE) {
-            for (int j = begin; j < end; j++) {
-                if (arr[j].getNombre().toLowerCase().compareTo(pivot.getNombre().toLowerCase()) < 0) {
-                    i++;
-                    Cancion swapTemp = arr[i];
-                    arr[i] = arr[j];
-                    arr[j] = swapTemp;
-                }
-            }
-        } else {
-            for (int j = begin; j < end; j++) {
-                if (arr[j].getNombre().toLowerCase().compareTo(pivot.getNombre().toLowerCase()) > 0) {
-                    i++;
-                    Cancion swapTemp = arr[i];
-                    arr[i] = arr[j];
-                    arr[j] = swapTemp;
-                }
-            }
-        }
-        Cancion swapTemp = arr[i + 1];
-        arr[i + 1] = arr[end];
-        arr[end] = swapTemp;
-        return i + 1;
-    }
+    // private int partition(Cancion arr[], int begin, int end, Integer type) {
+    // Cancion pivot = arr[end];
+    // int i = (begin - 1);
+    // if (type == Utiles.ASCEDENTE) {
+    // for (int j = begin; j < end; j++) {
+    // if
+    // (arr[j].getNombre().toLowerCase().compareTo(pivot.getNombre().toLowerCase())
+    // < 0) {
+    // i++;
+    // Cancion swapTemp = arr[i];
+    // arr[i] = arr[j];
+    // arr[j] = swapTemp;
+    // }
+    // }
+    // } else {
+    // for (int j = begin; j < end; j++) {
+    // if
+    // (arr[j].getNombre().toLowerCase().compareTo(pivot.getNombre().toLowerCase())
+    // > 0) {
+    // i++;
+    // Cancion swapTemp = arr[i];
+    // arr[i] = arr[j];
+    // arr[j] = swapTemp;
+    // }
+    // }
+    // }
+    // Cancion swapTemp = arr[i + 1];
+    // arr[i + 1] = arr[end];
+    // arr[end] = swapTemp;
+    // return i + 1;
+    // }
 
-    private void quickSort(Cancion arr[], int begin, int end, Integer type) {
-        if (begin < end) {
-            int partitionIndex = partition(arr, begin, end, type);
-            quickSort(arr, begin, partitionIndex - 1, type);
-            quickSort(arr, partitionIndex + 1, end, type);
-        }
-    }
+    // private void quickSort(Cancion arr[], int begin, int end, Integer type) {
+    // if (begin < end) {
+    // int partitionIndex = partition(arr, begin, end, type);
+    // quickSort(arr, begin, partitionIndex - 1, type);
+    // quickSort(arr, partitionIndex + 1, end, type);
+    // }
+    // }
 
-    public LinkedList<Cancion> orderQ(Integer type) {
-        LinkedList<Cancion> lista = new LinkedList<>();
-        if (!listAll().isEmpty()) {
-            Cancion arr[] = listAll().toArray();
-            quickSort(arr, 0, arr.length - 1, type);
-            lista.toList(arr);
-        }
+    // public LinkedList<Cancion> orderQ(Integer type) {
+    // LinkedList<Cancion> lista = new LinkedList<>();
+    // if (!listAll().isEmpty()) {
+    // Cancion arr[] = listAll().toArray();
+    // quickSort(arr, 0, arr.length - 1, type);
+    // lista.toList(arr);
+    // }
+    // return lista;
+    // }
+
+    // public LinkedList<Cancion> orderQuickSortPorNombre() {
+    // LinkedList<Cancion> lista = listAll();
+    // lista.quickSort(Utiles.ASCEDENTE); // Si Cancion implementa Comparable por
+    // nombre
+    // return lista;
+    // }
+
+    // Quick Sort
+
+    public LinkedList<Cancion> orderQuickSort(String attribute, Integer type) {
+        LinkedList<Cancion> lista = listAll();
+        lista.quickSort(attribute, type);
         return lista;
     }
 
     // Shell Sort
 
-    public LinkedList<Cancion> shellSortByAttribute(String attribute, Integer type) {
-        LinkedList<Cancion> lista = new LinkedList<>();
-        if (!listAll().isEmpty()) {
-            Cancion[] arr = listAll().toArray();
-            int n = arr.length;
-            for (int gap = n / 2; gap > 0; gap /= 2) {
-                for (int i = gap; i < n; i++) {
-                    Cancion temp = arr[i];
-                    int j = i;
-                    try {
-                        Object tempVal = Cancion.class.getMethod("get" + capitalize(attribute)).invoke(temp);
-                        while (j >= gap) {
-                            Object gapVal = Cancion.class.getMethod("get" + capitalize(attribute)).invoke(arr[j - gap]);
-                            int cmp;
-                            if (tempVal instanceof Comparable && gapVal instanceof Comparable) {
-                                cmp = ((Comparable) tempVal).compareTo(gapVal);
-                            } else {
-                                cmp = tempVal.toString().compareTo(gapVal.toString());
-                            }
-                            boolean condition = (type == Utiles.ASCEDENTE && cmp < 0)
-                                    || (type == Utiles.DESCENDENTE && cmp > 0);
-                            if (!condition)
-                                break;
-                            arr[j] = arr[j - gap];
-                            j -= gap;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    arr[j] = temp;
-                }
-            }
-            lista.toList(arr);
-        }
+    public LinkedList<Cancion> orderShellSort(String attribute, Integer type) throws Exception {
+        LinkedList<Cancion> lista = listAll();
+        lista.shellSort(attribute, type);
         return lista;
     }
 
-    public LinkedList<HashMap<String, String>> search(String attribute, String text, Integer type) throws Exception {
-        LinkedList<HashMap<String, String>> lista = all();
-        LinkedList<HashMap<String, String>> resp = new LinkedList<>();
-        if (!lista.isEmpty()) {
-            HashMap<String, String>[] arr = lista.toArray();
-            System.out.println(attribute + " " + text + " ** *** * * ** * * * *");
-            switch (type) {
-                case 1:
-                    System.out.println(attribute + " " + text + " UNO");
-                    for (HashMap m : arr) {
-                        if (m.get(attribute).toString().toLowerCase().startsWith(text.toLowerCase())) {
-                            resp.add(m);
-                        }
-                    }
-                    break;
-                case 2:
-                    System.out.println(attribute + " " + text + " DOS");
-                    for (HashMap m : arr) {
-                        if (m.get(attribute).toString().toLowerCase().endsWith(text.toLowerCase())) {
-                            resp.add(m);
-                        }
-                    }
-                    break;
-                default:
-                    System.out.println(attribute + " " + text + " TRES");
-                    for (HashMap m : arr) {
-                        System.out.println("***** " + m.get(attribute) + "   " + attribute);
-                        if (m.get(attribute).toString().toLowerCase().contains(text.toLowerCase())) {
-                            resp.add(m);
-                        }
-                    }
-                    break;
-            }
-        }
-        return resp;
+    public LinkedList<Cancion> busquedaLineal(String attribute, String text, Integer type) throws Exception {
+        LinkedList<Cancion> lista = listAll();
+        return lista.busquedaLineal(attribute, text, type);
     }
+
+    // public Integer buquedaLinealBinario(String attribute, String text, Integer type) throws Exception {
+    //     LinkedList<Cancion> lista = listAll();
+    //     return lista.LinealBinario(attribute, text, type);
+    // }
+
+
+ 
+    
+    public LinkedList<HashMap<String, String>> busquedaLinealBinaria(String attribute, String text, Integer type)
+        throws Exception {
+    LinkedList<HashMap<String, String>> lista = all();
+    lista.quickSort(attribute, Utiles.ASCEDENTE); // Si quieres ordenar antes de buscar
+    return lista.busquedaLinealBinaria(attribute, text, type);
+}
 
     public static void main(String[] args) {
         DaoCancion da = new DaoCancion();

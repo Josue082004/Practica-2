@@ -3,9 +3,7 @@ package com.unl.music.base.controller.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
 import com.unl.music.base.models.Album;
 import com.unl.music.base.models.Banda;
 import com.unl.music.base.controller.dao.dao_models.DaoAlbum;
@@ -13,10 +11,7 @@ import com.unl.music.base.controller.dao.dao_models.DaoBanda;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.BrowserCallable;
 import com.vaadin.hilla.mappedtypes.Pageable;
-
-import java.text.SimpleDateFormat;
 import io.micrometer.common.lang.NonNull;
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.validation.constraints.NotEmpty;
 
 

@@ -4,24 +4,23 @@ import com.unl.music.base.controller.data_struct.list.LinkedList;
 
 public class Tiempo {
     public static void main(String[] args) throws Exception {
-        String path = "src/main/java/com/unl/music/base/models/Practica2/data.txt";
+        String path = "src/main/java/com/unl/music/base/models/parte1/data.txt";
 
-        long inicioArreglo = System.nanoTime();
-        Integer[] datosArreglo = Arreglo.cargarData(path);
-        int repetidosArreglo = Arreglo.contarRepetidos(datosArreglo);
-        long finArreglo = System.nanoTime();
+        // Cargar datos en lista enlazada
+        LinkedList<Integer> datosListaQ = Lista.cargarData(path);
+        LinkedList<Integer> datosListaS = Lista.cargarData(path);
 
-        long inicioLista = System.nanoTime();
-        LinkedList<Integer> datosLista = Lista.cargarData(path);
-        int repetidosLista = Lista.contarRepetidos(datosLista);
-        long finLista = System.nanoTime();
+        // Medir tiempo QuickSort en LinkedList
+        long inicioQuick = System.nanoTime();
+        datosListaQ.quickSort(null, 1); // null porque Integer no tiene atributo, 1 para ascendente
+        long finQuick = System.nanoTime();
 
-        System.out.printf("Numero repetidos en el Arreglo       : %d%n", repetidosArreglo);
-        System.out.printf("Numero repetidos en la Lista enlazada: %d%n", repetidosLista);
-        System.out.println("\nTIEMPOS:\n");
-        System.out.printf("Arreglo       : %d ns%n", (finArreglo - inicioArreglo));
-        System.out.printf("Lista Enlazada: %d ns%n", (finLista - inicioLista));
+        // Medir tiempo ShellSort en LinkedList
+        long inicioShell = System.nanoTime();
+        datosListaS.shellSort(null, 1); // null porque Integer no tiene atributo, 1 para ascendente
+        long finShell = System.nanoTime();
+
+        System.out.println("QuickSort LinkedList: " + (finQuick - inicioQuick) + " ns");
+        System.out.println("ShellSort LinkedList: " + (finShell - inicioShell) + " ns");
     }
 }
-
-

@@ -522,7 +522,7 @@ export default function CancionView() {
   const search = async () => {
     try {
       console.log(criterio.value + " " + text.value);
-      CancionService.search(criterio.value, text.value, 1).then(function (data) {
+      CancionService.busquedaLineal(criterio.value, text.value, 1).then(function (data) {
         setItems(data);
       });
 
