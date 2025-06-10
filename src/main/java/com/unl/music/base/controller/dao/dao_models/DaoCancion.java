@@ -489,7 +489,7 @@ public class DaoCancion extends AdapterDao<Cancion> {
     public LinkedList<HashMap<String, String>> busquedaLinealBinaria(String attribute, String text, Integer type)
         throws Exception {
     LinkedList<HashMap<String, String>> lista = all();
-    lista.quickSort(attribute, Utiles.ASCEDENTE); // Si quieres ordenar antes de buscar
+    lista.quickSort(attribute, Utiles.ASCEDENTE);
     return lista.busquedaLinealBinaria(attribute, text, type);
 }
 
