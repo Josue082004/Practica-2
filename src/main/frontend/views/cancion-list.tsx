@@ -241,7 +241,7 @@ function CancionEntryFormUpdate(props: CancionEntryFormPropsUpdate) {
   const updateCancion = async () => {
     try {
 
-      if (nombre.value.trim().length > 0 && id_genero.value > 0 && duracion.value.trim().length > 0 && url.value.trim().length > 0 &&
+      if (nombre.value.trim().length > 0 && id_genero.value > 0 && String(duracion.value).trim().length > 0 && url.value.trim().length > 0 &&
         tipo.value.trim().length > 0 && id_album.value > 0) {
         const tipoEnum = tipo.value as TipoArchivoEnum;
         await CancionService.updateCancion(parseInt(ident), nombre.value, id_genero.value, duracion.value, url.value, tipo.value, id_album.value);
@@ -446,15 +446,21 @@ function duracionRenderer({ item }: { item: Cancion }) {
 
 export default function CancionView() {
   const [items, setItems] = useState([]);
+  const [originalItems, setOriginalItems] = useState([]);
   const [generos, setGeneros] = useState<Genero[]>([]);
   const [albums, setAlbums] = useState<Album[]>([])
+  const [sortState, setSortState] = useState({});
+
   const callData = () => {
     CancionService.listAll().then(function (data) {
       setItems(data);
+      setOriginalItems(data);
     });
   };
   useEffect(() => {
     callData();
+    GeneroService.listAllGenero().then(setGeneros);
+    AlbumService.listAll().then(setAlbums);
   }, []);
 
   const criterio = useSignal('');
@@ -476,13 +482,21 @@ export default function CancionView() {
   }, []);
 
   const order = (event, columnId) => {
-    console.log(event);
-    const direction = event.detail.value;
-    console.log(`Ordenando por ${columnId} en dirección ${direction}`);
-
-    var dir = (direction === 'asc' ? 1 : 2);
-    CancionService.orderBy(columnId, dir).then(function (data) {
-      setItems(data);
+    const direction = event.detail.value; // 'asc', 'desc', o null
+    setSortState(prev => {
+      const newState = { ...prev };
+      // Si direction es null, restaurar el original
+      if (!direction) {
+        setItems(originalItems);
+        newState[columnId] = null;
+      } else {
+        var dir = (direction === 'asc' ? 1 : 2);
+        CancionService.order(columnId, dir).then(function (data) {
+          setItems(data);
+        });
+        newState[columnId] = direction;
+      }
+      return newState;
     });
   }
 
@@ -502,11 +516,11 @@ export default function CancionView() {
     return <span>{album ? album.nombre : 'Sin álbum'}</span>;
   }
 
-  function indexLink({ item }: { item, Album }) {
+  function indexLink({ item }: { item, Cancion }) {
     return (
       <span>
-        <CancionEntryFormUpdate arguments={item} onAlbumUpdated={callData} />
-        <CancionEntryFormDelete arguments={item} onAlbumDeleted={callData} />
+        <CancionEntryFormUpdate arguments={item} onCancionUpdated={callData} />
+        <CancionEntryFormDelete arguments={item} onCancionDeleted={callData} />
 
       </span>
     );
@@ -521,12 +535,47 @@ export default function CancionView() {
   }
   const search = async () => {
     try {
-      console.log(criterio.value + " " + text.value);
-      CancionService.busquedaLineal(criterio.value, text.value, 1).then(function (data) {
-        setItems(data);
-      });
+      let criterioBusqueda = criterio.value;
+      let textoBusqueda = text.value.trim().toLowerCase();
 
-      criterio.value = '';
+      if (criterioBusqueda === 'id_genero') {
+        const ids = generos
+          .filter(g => g.nombre.toLowerCase().includes(textoBusqueda))
+          .map(g => g.id);
+        if (ids.length === 0) {
+          setItems([]);
+          Notification.show('No se encontró ningún género', { duration: 5000, position: 'bottom-end', theme: 'error' });
+          return;
+        }
+
+        let allResults: any[] = [];
+        for (const id of ids) {
+
+          const data = await CancionService.busqueda('id_genero', id.toString(), 2);
+          allResults = allResults.concat(data);
+        }
+        setItems(allResults);
+      } else if (criterioBusqueda === 'id_album') {
+        const ids = albums
+          .filter(a => a.nombre.toLowerCase().includes(textoBusqueda))
+          .map(a => a.id);
+        if (ids.length === 0) {
+          setItems([]);
+          Notification.show('No se encontró ningún álbum', { duration: 5000, position: 'bottom-end', theme: 'error' });
+          return;
+        }
+        let allResults: any[] = [];
+        for (const id of ids) {
+          const data = await CancionService.busqueda('id_album', id.toString(), 2);
+          allResults = allResults.concat(data);
+        }
+        setItems(allResults);
+      } else {
+        CancionService.busqueda(criterioBusqueda, text.value, 2).then(function (data) {
+          setItems(data);
+        });
+      }
+
       text.value = '';
 
       Notification.show('Busqueda realizada', { duration: 5000, position: 'bottom-end', theme: 'success' });
@@ -562,10 +611,13 @@ export default function CancionView() {
         <Button onClick={search} theme="primary">
           BUSCAR
         </Button>
+        <Button onClick={callData} theme="secondary">
+          Ver toda la lista
+        </Button>
 
       </HorizontalLayout>
       <Grid items={items}>
-        <GridSortColumn renderer={indexIndex} header="Nro " />
+        <GridColumn renderer={indexIndex} header="Nro " />
         <GridSortColumn path="nombre" header="Nombre" onDirectionChanged={(e) => order(e, 'nombre')} />
         <GridSortColumn path="id_genero" header="Genero" renderer={generoRenderer} onDirectionChanged={(e) => order(e, 'id_genero')} />
         <GridSortColumn path="duracion" header="Duracion" renderer={duracionRenderer} onDirectionChanged={(e) => order(e, 'duracion')} />

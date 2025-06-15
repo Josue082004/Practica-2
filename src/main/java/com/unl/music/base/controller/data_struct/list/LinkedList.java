@@ -3,11 +3,6 @@ package com.unl.music.base.controller.data_struct.list;
 import java.util.stream.StreamSupport;
 
 import com.unl.music.base.controller.Utiles;
-import com.unl.music.base.models.Cancion;
-
-import jakarta.persistence.criteria.CriteriaBuilder.In;
-
-import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class LinkedList<E> {
@@ -152,32 +147,6 @@ public class LinkedList<E> {
         return matriz;
     }
 
-    public int busquedaBinaria(String attribute, String text) {
-    E[] arr = this.toArray();
-    Utiles util = new Utiles();
-    int low = 0, high = arr.length - 1;
-    while (low <= high) {
-        int mid = (low + high) / 2;
-        try {
-            Object valor = arr[mid].getClass().getMethod("get" + util.capitalize(attribute)).invoke(arr[mid]);
-            String valorStr = valor.toString().toLowerCase();
-            String textoStr = text.toLowerCase();
-            int cmp = valorStr.compareTo(textoStr);
-            if (cmp == 0) {
-                return mid;
-            } else if (cmp < 0) {
-                low = mid + 1;
-            } else {
-                high = mid - 1;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            break;
-        }
-    }
-    return -1;
-}
-
     public LinkedList<E> toList(E[] matriz) {
         clear();
         for (int i = 0; i < matriz.length; i++) {
@@ -253,44 +222,65 @@ public class LinkedList<E> {
 
     public void quickSort(String attribute, Integer type) {
         E[] arr = this.toArray();
-        quick((Cancion[]) arr, 0, arr.length - 1, type);
+        quick(arr, 0, arr.length - 1, attribute, type);
         this.toList(arr);
     }
 
-    private void quick(Cancion arr[], int begin, int end, Integer type) {
+    private void quick(E[] arr, int begin, int end, String attribute, Integer type) {
         if (begin < end) {
-            int partitionIndex = partition(arr, begin, end, type);
-            quick(arr, begin, partitionIndex - 1, type);
-            quick(arr, partitionIndex + 1, end, type);
+            int partitionIndex = partition(arr, begin, end, attribute, type);
+            quick(arr, begin, partitionIndex - 1, attribute, type);
+            quick(arr, partitionIndex + 1, end, attribute, type);
         }
     }
 
-    private int partition(Cancion arr[], int begin, int end, Integer type) {
-        Cancion pivot = arr[end];
-        int i = (begin - 1);
-        if (type == Utiles.ASCEDENTE) {
-            for (int j = begin; j < end; j++) {
-                if (arr[j].getNombre().toLowerCase().compareTo(pivot.getNombre().toLowerCase()) < 0) {
-                    i++;
-                    Cancion swapTemp = arr[i];
-                    arr[i] = arr[j];
-                    arr[j] = swapTemp;
-                }
-            }
-        } else {
-            for (int j = begin; j < end; j++) {
-                if (arr[j].getNombre().toLowerCase().compareTo(pivot.getNombre().toLowerCase()) > 0) {
-                    i++;
-                    Cancion swapTemp = arr[i];
-                    arr[i] = arr[j];
-                    arr[j] = swapTemp;
-                }
+    private int partition(E[] arr, int begin, int end, String attribute, Integer type) {
+        Utiles util = new Utiles();
+        Object pivotValue = getComparar(arr[end], attribute, util);
+        int i = begin - 1;
+        for (int j = begin; j < end; j++) {
+            Object currentValue = getComparar(arr[j], attribute, util);
+            int cmp = comparar(currentValue, pivotValue);
+            if ((type == Utiles.ASCEDENTE && cmp < 0) || (type != Utiles.ASCEDENTE && cmp > 0)) {
+                i++;
+                E temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
             }
         }
-        Cancion swapTemp = arr[i + 1];
+        E temp = arr[i + 1];
         arr[i + 1] = arr[end];
-        arr[end] = swapTemp;
+        arr[end] = temp;
         return i + 1;
+    }
+
+    private Object getComparar(E obj, String attribute, Utiles util) {
+        if (attribute == null || attribute.isEmpty()) {
+            return obj;
+        }
+        try {
+            return obj.getClass().getMethod("get" + util.capitalize(attribute)).invoke(obj);
+        } catch (Exception e) {
+            return obj;
+        }
+    }
+
+    private int comparar(Object a, Object b) {
+        if (a == null && b == null)
+            return 0;
+        if (a == null)
+            return -1;
+        if (b == null)
+            return 1;
+        if (a instanceof Number && b instanceof Number) {
+            Double da = ((Number) a).doubleValue();
+            Double db = ((Number) b).doubleValue();
+            return da.compareTo(db);
+        }
+        if (a instanceof Comparable && b instanceof Comparable) {
+            return ((Comparable) a).compareTo(b);
+        }
+        return a.toString().compareTo(b.toString());
     }
 
     // ShellSort
@@ -359,192 +349,71 @@ public class LinkedList<E> {
         return resp;
     }
 
-    // Busqueda Lineal Binaria
+    // Busqueda Binaria
 
-    // public Integer LinealBinario(String attribute, String text, Integer type) {
-    //     Integer half = 0;
-    //     E[] array = this.toArray();
-    //     if (array.length != 0 && !text.isEmpty()) {
-    //         half = array.length / 2;
-    //         int aux = 0;
-    //         System.out.println(text.trim().toLowerCase().charAt(0) + " *** **** ***" + half + ""
-    //                 + array[half].get(attribute).toString().trim().toLowerCase().charAt(0));
-    //         if (text.trim().toLowerCase().charAt(0) == array[half].get(attribute).toString().trim().toLowerCase()
-    //                 .charAt(0))
-    //             aux = 1;
-    //         else if (text.trim().toLowerCase().charAt(0) < array[half].get(attribute).toString().trim().toLowerCase()
-    //                 .charAt(0))
-    //             aux = -1;
-    //         half = half * aux;
-    //     }
-    //     return half;
-    // }
-
-    // public LinkedList<HashMap<String, Object>> busquedaLinealBinaria(String attribute, String text, Integer type)
-    //         throws Exception {
-    //     LinkedList<HashMap<String, String>> lista = all();
-    //     LinkedList<HashMap<String, String>> resp = new LinkedList<>();
-    //     if (!lista.isEmpty()) {
-    //         lista.quickSort(attribute, Utiles.ASCEDENTE);
-    //         HashMap<String, String>[] arr = lista.toArray();
-    //         Utiles util = new Utiles();
-    //         Integer n = LinealBinario(attribute, text, type);
-    //         System.out.println("n: " + n);
-    //         switch (type) {
-    //             case 1:
-    //                 if (n > 0) {
-    //                     for (int i = n; i < arr.length; i++) {
-    //                         if (arr[i].get(attribute).toString().toLowerCase().startsWith(text.toLowerCase())) {
-    //                             resp.add(arr[i]);
-    //                         }
-    //                     }
-    //                 } else if (n < 0) {
-    //                     n *= -1;
-    //                     for (int i = n; i >= 0; i--) {
-    //                         if (arr[i].get(attribute).toString().toLowerCase().startsWith(text.toLowerCase())) {
-    //                             resp.add(arr[i]);
-    //                         }
-    //                     }
-    //                 } else {
-    //                     for (int i = 0; i < arr.length; i++) {
-    //                         if (arr[i].get(attribute).toString().toLowerCase().startsWith(text.toLowerCase())) {
-    //                             resp.add(arr[i]);
-    //                         }
-    //                     }
-    //                 }
-
-    //                 break;
-
-    //             case 2:
-    //                 if (n > 0) {
-    //                     for (int i = n; i < arr.length; i++) {
-    //                         if (arr[i].get(attribute).toString().toLowerCase().endsWith(text.toLowerCase())) {
-    //                             resp.add(arr[i]);
-    //                         }
-    //                     }
-    //                 } else if (n < 0) {
-    //                     n *= -1;
-    //                     for (int i = n; i >= 0; i--) {
-    //                         if (arr[i].get(attribute).toString().toLowerCase().endsWith(text.toLowerCase())) {
-    //                             resp.add(arr[i]);
-    //                         }
-    //                     }
-    //                 } else {
-    //                     for (int i = 0; i < arr.length; i++) {
-    //                         if (arr[i].get(attribute).toString().toLowerCase().endsWith(text.toLowerCase())) {
-    //                             resp.add(arr[i]);
-    //                         }
-    //                     }
-    //                 }
-    //                 break;
-    //             default:
-    //                 System.out.println(attribute + " " + text + " " + n);
-    //                 // if(n>0){
-    //                 // for(int i = n; i < arr.length; i++){
-    //                 // if(arr[i].get(attribute).toString().toLowerCase().contains(text.toLowerCase())){
-    //                 // resp.add(arr[i]);
-    //                 // }
-    //                 // }
-    //                 // }else if(n<0){
-    //                 // n *= -1;
-    //                 // for(int i = n; i >= 0; i--){
-    //                 // if(arr[i].get(attribute).toString().toLowerCase().contains(text.toLowerCase())){
-    //                 // resp.add(arr[i]);
-    //                 // }
-    //                 // }
-    //                 // }else{
-    //                 // for(int i = 0; i < arr.length; i++){
-    //                 // if(arr[i].get(attribute).toString().toLowerCase().contains(text.toLowerCase())){
-    //                 // resp.add(arr[i]);
-    //                 // }
-    //                 // }
-    //                 // }
-    //                 for (int i = 0; i < arr.length; i++) {
-    //                     if (arr[i].get(attribute).toString().toLowerCase().contains(text.toLowerCase())) {
-    //                         resp.add(arr[i]);
-    //                     }
-    //                 }
-    //         }
-    //         break;
-    //     }
-    //     return resp;
-    // }
-
-    public LinkedList<HashMap<String, String>> busquedaLinealBinaria(String attribute, String text, Integer type) {
-    LinkedList<HashMap<String, String>> resp = new LinkedList<>();
-    if (!this.isEmpty()) {
-        HashMap<String, String>[] arr = (HashMap<String, String>[]) this.toArray();
-        // Ordenar antes de buscar
-        // Si tienes un método de ordenamiento en LinkedList, úsalo aquí si es necesario
-        int half = 0;
-        if (arr.length != 0 && !text.isEmpty()) {
-            half = arr.length / 2;
-            int aux = 0;
-            char c1 = text.trim().toLowerCase().charAt(0);
-            char c2 = arr[half].get(attribute).toString().trim().toLowerCase().charAt(0);
-            if (c1 == c2)
-                aux = 1;
-            else if (c1 < c2)
-                aux = -1;
-            half = half * aux;
+    public LinkedList<E> busquedaBinaria(String attribute, String text, Integer type) {
+        LinkedList<E> resp = new LinkedList<>();
+        if (isEmpty())
+            return resp;
+        this.quickSort(attribute, type);
+        E[] arr = this.toArray();
+        Utiles util = new Utiles();
+        int low = 0, high = arr.length - 1;
+        int found = -1;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            Object valor = getComparar(arr[mid], attribute, util);
+            String valorStr = valor != null ? valor.toString().toLowerCase() : "";
+            String textoStr = text.toLowerCase();
+            int cmp = valorStr.compareTo(textoStr);
+            if (cmp == 0) {
+                found = mid;
+                break;
+            } else if (cmp < 0) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
         }
-        switch (type) {
-            case 1: // startsWith
-                if (half > 0) {
-                    for (int i = half; i < arr.length; i++) {
-                        if (arr[i].get(attribute).toLowerCase().startsWith(text.toLowerCase())) {
-                            resp.add(arr[i]);
-                        }
-                    }
-                } else if (half < 0) {
-                    half *= -1;
-                    for (int i = half; i >= 0; i--) {
-                        if (arr[i].get(attribute).toLowerCase().startsWith(text.toLowerCase())) {
-                            resp.add(arr[i]);
-                        }
-                    }
+        if (found != -1) {
+            int i = found;
+            while (i >= 0) {
+                Object valor = getComparar(arr[i], attribute, util);
+                String valorStr = valor != null ? valor.toString().toLowerCase() : "";
+                String textoStr = text.toLowerCase();
+                if (valorStr.equals(textoStr)) {
+                    resp.addFirst(arr[i]);
+                    i--;
                 } else {
-                    for (int i = 0; i < arr.length; i++) {
-                        if (arr[i].get(attribute).toLowerCase().startsWith(text.toLowerCase())) {
-                            resp.add(arr[i]);
-                        }
-                    }
+                    break;
                 }
-                break;
-            case 2: // endsWith
-                if (half > 0) {
-                    for (int i = half; i < arr.length; i++) {
-                        if (arr[i].get(attribute).toLowerCase().endsWith(text.toLowerCase())) {
-                            resp.add(arr[i]);
-                        }
-                    }
-                } else if (half < 0) {
-                    half *= -1;
-                    for (int i = half; i >= 0; i--) {
-                        if (arr[i].get(attribute).toLowerCase().endsWith(text.toLowerCase())) {
-                            resp.add(arr[i]);
-                        }
-                    }
+            }
+            int j = found + 1;
+            while (j < arr.length) {
+                Object valor = getComparar(arr[j], attribute, util);
+                String valorStr = valor != null ? valor.toString().toLowerCase() : "";
+                String textoStr = text.toLowerCase();
+                if (valorStr.equals(textoStr)) {
+                    resp.add(arr[j]);
+                    j++;
                 } else {
-                    for (int i = 0; i < arr.length; i++) {
-                        if (arr[i].get(attribute).toLowerCase().endsWith(text.toLowerCase())) {
-                            resp.add(arr[i]);
-                        }
-                    }
+                    break;
                 }
-                break;
-            default: // contains
-                for (int i = 0; i < arr.length; i++) {
-                    if (arr[i].get(attribute).toLowerCase().contains(text.toLowerCase())) {
-                        resp.add(arr[i]);
-                    }
-                }
-                break;
+            }
         }
+        return resp;
     }
-    return resp;
-}
 
+    // Busqueda Lineal Binaria
+    public LinkedList<E> busquedaLinealBinaria(String attribute, String text, Integer type) {
+        this.quickSort(attribute, type);
+        LinkedList<E> resultado = this.busquedaBinaria(attribute, text, type);
+        if (resultado.isEmpty()) {
+            resultado = this.busquedaLineal(attribute, text, type);
+        }
+
+        return resultado;
+    }
 
     public static void main(String[] args) {
         LinkedList<Double> lista = new LinkedList<>();

@@ -29,9 +29,22 @@ public class Utiles {
 
     public boolean compararAtributos(String atributo, Object a, Object b, Integer orden) {
         try {
-            Object valA = a.getClass().getMethod("get" + capitalize(atributo)).invoke(a);
-            Object valB = b.getClass().getMethod("get" + capitalize(atributo)).invoke(b);
-            int cmp = valA.toString().compareTo(valB.toString());
+            Object valA, valB;
+            if (atributo == null || atributo.isEmpty()) {
+                valA = a;
+                valB = b;
+            } else {
+                valA = a.getClass().getMethod("get" + capitalize(atributo)).invoke(a);
+                valB = b.getClass().getMethod("get" + capitalize(atributo)).invoke(b);
+            }
+            int cmp;
+            if (valA instanceof Number && valB instanceof Number) {
+                Double da = ((Number) valA).doubleValue();
+                Double db = ((Number) valB).doubleValue();
+                cmp = da.compareTo(db);
+            } else {
+                cmp = valA.toString().compareTo(valB.toString());
+            }
             if (orden == ASCEDENTE) {
                 return cmp < 0;
             } else {

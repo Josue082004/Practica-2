@@ -90,45 +90,18 @@ public class CancionService {
         return lista;
     }
 
-    // public List<Cancion> order(String atributo, Integer type) {
-    // System.out.println("Ordenando por " + atributo + " tipo: " + type);
-    // if (atributo.equalsIgnoreCase("nombre"))
-    // return (List<Cancion>) Arrays.asList(db.orderQ(type).toArray());
-    // else if (atributo.equalsIgnoreCase("duracion")) {
-    // return (List<Cancion>) Arrays.asList(db.orderDuracion(type).toArray());
-    // } else if (atributo.equalsIgnoreCase("id_genero")) {
-    // return (List<Cancion>) Arrays.asList(db.orderGenero(type).toArray());
-    // } else if (atributo.equalsIgnoreCase("id_album")) {
-    // return (List<Cancion>) Arrays.asList(db.orderAlbum(type).toArray());
-    // } else {
-    // return (List<Cancion>) Arrays.asList(db.listAll().toArray());
-    // }
-    // }
-
+    // Metodos de Ordenacion
     public List<Cancion> order(String atributo, Integer type) {
         return Arrays.asList(db.orderQuickSort(atributo, type).toArray());
     }
 
-    // public List<Cancion> shellSort(String atributo, Integer type) {
-    // return Arrays.asList(db.ShellSort(atributo, type).toArray());
-    // }
-
-    public List<Cancion> busquedaLineal(String attribute, String text, Integer type) throws Exception {
-        LinkedList<Cancion> lista = db.busquedaLineal(attribute, text, type);
+    // Metodo de busqueda   
+    public List<Cancion> busqueda(String attribute, String text, Integer type) throws Exception {
+        LinkedList<Cancion> lista = db.busquedaLinealBinaria(attribute, text, type);
         if (!lista.isEmpty()) {
             return Arrays.asList(lista.toArray());
         } else {
             return new ArrayList<>();
         }
     }
-
-    public List<HashMap<String, String>> busquedaBinaria(String attribute, String text, Integer type) throws Exception {
-        LinkedList<HashMap<String, String>> lista = db.busquedaLinealBinaria(attribute, text, type);
-        if (!lista.isEmpty()) {
-            return Arrays.asList(lista.toArray());
-        } else {
-            return new ArrayList<>();
-        }
-    }
-
 }
