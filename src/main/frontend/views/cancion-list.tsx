@@ -372,8 +372,7 @@ function CancionEntryFormDelete(props: CancionEntryFormPropsDelete) {
   };
 
   const ident = props.arguments.id;
-  const nombre = props.arguments.nombre; // <-- Aquí obtienes el nombre
-
+  const nombre = props.arguments.nombre; 
   const DeleteCancion = async () => {
     try {
       await CancionService.deleteCancion(parseInt(ident));
@@ -482,10 +481,9 @@ export default function CancionView() {
   }, []);
 
   const order = (event, columnId) => {
-    const direction = event.detail.value; // 'asc', 'desc', o null
+    const direction = event.detail.value; 
     setSortState(prev => {
       const newState = { ...prev };
-      // Si direction es null, restaurar el original
       if (!direction) {
         setItems(originalItems);
         newState[columnId] = null;

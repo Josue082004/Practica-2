@@ -2,12 +2,10 @@ package com.unl.music.base.controller.services;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import com.unl.music.base.models.Cancion;
 import com.unl.music.base.models.TipoArchivoEnum;
-import com.unl.music.base.controller.Utiles;
 import com.unl.music.base.controller.dao.dao_models.DaoAlbum;
 import com.unl.music.base.controller.dao.dao_models.DaoCancion;
 import com.unl.music.base.controller.dao.dao_models.DaoGenero;

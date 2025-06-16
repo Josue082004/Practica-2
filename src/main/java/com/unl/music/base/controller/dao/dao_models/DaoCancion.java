@@ -1,11 +1,7 @@
 package com.unl.music.base.controller.dao.dao_models;
 
-import com.unl.music.base.models.Album;
 import com.unl.music.base.models.Cancion;
-
 import java.util.HashMap;
-
-import com.unl.music.base.controller.Utiles;
 import com.unl.music.base.controller.dao.AdapterDao;
 import com.unl.music.base.controller.data_struct.list.LinkedList;
 

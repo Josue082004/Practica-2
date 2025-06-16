@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 
 public class Tiempo {
     public static void main(String[] args) throws Exception {
-        String path = "src/main/java/com/unl/music/base/models/Practica2/data.txt";
+        String path = "src/main/java/com/unl/music/base/models/Practica2/datos.txt";
 
         // long inicioArreglo = System.nanoTime();
         // Integer[] datosArreglo = Arreglo.cargarData(path);
@@ -44,7 +44,7 @@ public class Tiempo {
         long finShell = System.nanoTime();
         long tiempoShell = finShell - inicioShell;
 
-        System.out.println("QuickSort (ms)\tShellSort (NS)");
+        System.out.println("QuickSort (NS)\tShellSort (NS)");
         System.out.printf("%d\t%d%n", tiempoQuick, tiempoShell);
 
         // Guardar lista ordenada por QuickSort
