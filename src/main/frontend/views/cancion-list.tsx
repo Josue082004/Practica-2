@@ -238,6 +238,15 @@ function CancionEntryFormUpdate(props: CancionEntryFormPropsUpdate) {
     fetchAlbums();
   }, []);
 
+  useEffect(() => {
+    nombre.value = props.arguments.nombre;
+    id_genero.value = props.arguments.id_genero;
+    duracion.value = props.arguments.duracion;
+    url.value = props.arguments.url;
+    tipo.value = props.arguments.tipo;
+    id_album.value = props.arguments.id_album;
+  }, [props.arguments]);
+
   const updateCancion = async () => {
     try {
 

@@ -1,6 +1,9 @@
 package com.unl.music.base.controller;
 
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
+
+import com.unl.music.base.controller.dao.AdapterDao;
 
 public class Utiles {
     public static Integer ASCEDENTE = 1;
@@ -60,5 +63,33 @@ public class Utiles {
         if (str == null || str.isEmpty())
             return str;
         return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    private <E> Object getAtributAnidado(E obj, String atributo , AdapterDao dao) throws Exception{
+        Object ide = getClazz(obj, "id_"+ atributo);
+        if (ide == null) return null;
+
+        String atributoAnido = "nombre";
+        Object objAnida = dao.listAll().get(((Number) ide).intValue()- 1);
+        return getClazz(objAnida, atributoAnido);
+    }
+
+    public Object getClazz(Object data, String atributo) throws Exception {
+    String getter = "get" + atributo.substring(0,1).toUpperCase() + atributo.substring(1);
+    
+   /*   if (data == null ){
+    System.out.println("NO HAY DATA");
+
+    }   else{
+    System.out.println("DATA PERTENECIENTE A " + data.getClass().getSimpleName()); 
+    } */   
+        for (Method i : data.getClass().getMethods()) {
+            if (i.getName().equals(getter)) {
+                //System.out.println("SE ENCONTRO EL GETTER DE : "+ getter + i.invoke(data));
+                return i.invoke(data);
+            }
+        }
+        
+         throw new NoSuchMethodException("No existe el método " + getter + " en " + data.getClass().getName());
     }
 }

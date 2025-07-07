@@ -3,6 +3,9 @@ package com.unl.music.base.controller.data_struct.list;
 import java.util.stream.StreamSupport;
 
 import com.unl.music.base.controller.Utiles;
+import com.unl.music.base.controller.dao.AdapterDao;
+
+import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class LinkedList<E> {
@@ -218,6 +221,16 @@ public class LinkedList<E> {
         return StreamSupport.stream(java.util.Spliterators.spliterator(this.toArray(), 0), false);
     }
 
+    public Integer getUbicacion(String attribute, Object x, HashMap<String, AdapterDao> daos) throws Exception {
+        if (isEmpty()) {
+            System.out.println("VACIOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+            return -1;
+        }
+        this.quickSort(attribute, 1);
+        E[] arr = this.toArray();
+        return busquedaLinealBinariaIndex(arr, x, attribute);
+    }
+
     // QuickSort
 
     public void quickSort(String attribute, Integer type) {
@@ -413,6 +426,18 @@ public class LinkedList<E> {
         }
 
         return resultado;
+    }
+
+    // Método para buscar el índice de un elemento en el array por atributo y valor
+    private int busquedaLinealBinariaIndex(E[] arr, Object x, String attribute) {
+        Utiles util = new Utiles();
+        for (int i = 0; i < arr.length; i++) {
+            Object valor = getComparar(arr[i], attribute, util);
+            if (valor != null && valor.equals(x)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static void main(String[] args) {
