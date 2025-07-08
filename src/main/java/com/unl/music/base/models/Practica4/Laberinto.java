@@ -15,7 +15,7 @@ public class Laberinto {
                 int[] dims = pedirDimensiones();
                 int filas = dims[0], cols = dims[1];
                 char[][] maz = parseMaze(new Prim2().generar(filas, cols), filas, cols);
-                MazePanel panel = new MazePanel(maz, new LinkedList<>(), cols);
+                Panel panel = new Panel(maz, new LinkedList<>(), cols);
                 JScrollPane scroll = new JScrollPane(panel);
                 JLabel distanceLabel = new JLabel("Distancia: –");
                 JButton solveBtn = new JButton("Resolver");
@@ -61,7 +61,7 @@ public class Laberinto {
                     }
                 });
 
-                JFrame frame = new JFrame("Laberinto");
+                JFrame frame = new JFrame("Laberinto de Josue");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.getContentPane().setLayout(new BorderLayout());
                 frame.getContentPane().add(scroll, BorderLayout.CENTER);
@@ -117,12 +117,12 @@ public class Laberinto {
         return maz;
     }
 
-    static class MazePanel extends JPanel {
+    static class Panel extends JPanel {
         private final char[][] maze;
         private boolean[][] isPath;
         private final int cellSize = 10;
         private final int cols;
-        public MazePanel(char[][] m, LinkedList<Integer> path, int cols) {
+        public Panel(char[][] m, LinkedList<Integer> path, int cols) {
             this.maze = m;
             this.cols = cols;
             setPath(path, cols);
@@ -147,7 +147,7 @@ public class Laberinto {
             for (int i = 0; i < maze.length; i++) {
                 for (int j = 0; j < maze[0].length; j++) {
                     if (isPath[i][j] && maze[i][j] != 'S' && maze[i][j] != 'E') {
-                        g.setColor(Color.BLUE);
+                        g.setColor(Color.ORANGE);
                     } else {
                         switch (maze[i][j]) {
                             case '0': g.setColor(Color.DARK_GRAY); break;
